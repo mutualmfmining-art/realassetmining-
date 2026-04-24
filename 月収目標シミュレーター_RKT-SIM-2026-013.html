@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月収目標シミュレーター｜Real Asset Mining</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ivory: #faf5ec;
+    --cream: #f3e9d8;
+    --cream-deep: #ead9bf;
+    --rose: #c9a47a;
+    --rose-deep: #a67d52;
+    --rose-dark: #7a5a3a;
+    --ink: #3d2f24;
+    --ink-soft: #6e5a48;
+    --ink-dim: #a89584;
+    --pink: #e8b5a8;
+    --pink-soft: #f5d8ce;
+    --gold: #c9a227;
+    --gold-bright: #f2cc55;
+    --line: #e4d5bd;
+    --shadow-card: 0 12px 48px rgba(122, 90, 58, 0.1);
+  }
+
+  body {
+    background: var(--ivory);
+    color: var(--ink);
+    font-family: 'Noto Sans JP', sans-serif;
+    line-height: 1.75;
+    letter-spacing: 0.02em;
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(232, 181, 168, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(201, 164, 122, 0.1) 0%, transparent 40%);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.22;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.6 0 0 0 0 0.5 0 0 0 0 0.4 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    text-align: center;
+    padding: 48px 16px 40px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: 0.25em;
+    color: var(--rose-deep);
+    margin-bottom: 18px;
+  }
+
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: '';
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: var(--rose);
+    vertical-align: middle;
+    margin: 0 14px;
+  }
+
+  .hero h1 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: clamp(26px, 5vw, 40px);
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 .accent {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--rose-deep);
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    color: var(--ink-soft);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.9;
+  }
+
+  /* ============ MAIN LAYOUT ============ */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  @media (max-width: 860px) {
+    .main { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: #fff;
+    border-radius: 24px;
+    padding: 32px 28px;
+    box-shadow: var(--shadow-card);
+  }
+
+  @media (max-width: 680px) {
+    .panel { padding: 24px 18px; }
+  }
+
+  .panel-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    color: var(--rose-deep);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  /* ============ CONTROLS ============ */
+  .control-block {
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .control-block:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .control-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+
+  /* 目標月収スライダー */
+  .target-display {
+    text-align: center;
+    padding: 16px 0;
+    background: linear-gradient(135deg, var(--cream), var(--pink-soft));
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+
+  .target-display .label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--rose-deep);
+    margin-bottom: 4px;
+  }
+
+  .target-display .value {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 40px;
+    color: var(--rose-dark);
+    line-height: 1;
+  }
+
+  .target-display .unit {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 14px;
+    color: var(--rose-deep);
+    font-weight: 600;
+    margin-left: 4px;
+  }
+
+  /* Range slider */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--rose) 0%, var(--rose) var(--progress, 20%), var(--cream) var(--progress, 20%));
+    border-radius: 3px;
+    outline: none;
+    margin: 14px 0 8px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: #fff;
+    border: 3px solid var(--rose-deep);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(166, 125, 82, 0.3);
+    transition: transform 0.15s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: #fff;
+    border: 3px solid var(--rose-deep);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(166, 125, 82, 0.3);
+  }
+
+  .range-minmax {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-dim);
+  }
+
+  /* 戦略セレクター */
+  .strategy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .strategy-card {
+    background: var(--ivory);
+    border: 2px solid transparent;
+    border-radius: 14px;
+    padding: 16px 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .strategy-card:hover { background: #f3ebde; }
+
+  .strategy-card.active {
+    background: #fff;
+    border-color: var(--rose-deep);
+    box-shadow: 0 4px 16px rgba(166, 125, 82, 0.15);
+  }
+
+  .strategy-icon {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .strategy-name {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .strategy-card.active .strategy-name { color: var(--rose-deep); }
+
+  .strategy-desc {
+    font-size: 10px;
+    color: var(--ink-dim);
+    line-height: 1.5;
+  }
+
+  /* FX */
+  .fx-input-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--ivory);
+    border-radius: 12px;
+  }
+
+  .fx-input-box label {
+    font-size: 12px;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+  }
+
+  .fx-input-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #fff;
+    border: 1.5px solid transparent;
+    border-radius: 8px;
+    padding: 5px 12px;
+  }
+
+  .fx-input-wrap:focus-within { border-color: var(--rose-deep); }
+
+  .fx-input-wrap input {
+    border: none;
+    outline: none;
+    width: 100%;
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--rose-deep);
+  }
+
+  .fx-input-wrap .unit {
+    font-size: 11px;
+    color: var(--ink-dim);
+    font-weight: 600;
+  }
+
+  /* ============ RESULT ============ */
+  .result {
+    position: relative;
+  }
+
+  .result-headline {
+    text-align: center;
+    padding: 20px 16px 28px;
+    background: linear-gradient(135deg, var(--cream), var(--pink-soft));
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+
+  .rh-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--rose-deep);
+    margin-bottom: 6px;
+  }
+
+  .rh-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: clamp(36px, 6vw, 52px);
+    color: var(--rose-dark);
+    line-height: 1;
+    transition: color 0.3s;
+  }
+
+  .rh-num-unit {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 18px;
+    color: var(--rose-deep);
+    font-weight: 600;
+    margin-left: 4px;
+  }
+
+  .rh-usd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 8px;
+  }
+
+  .rh-check {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 4px 14px;
+    background: #fff;
+    border-radius: 14px;
+    font-family: 'Shippori Mincho', serif;
+    font-size: 11px;
+    color: var(--sage, #7a9b6c);
+    border: 1px solid var(--line);
+  }
+
+  /* Mini Pyramid */
+  .mini-pyramid {
+    background: linear-gradient(180deg, var(--ivory), #fff);
+    border-radius: 20px;
+    padding: 28px 20px;
+    margin-bottom: 20px;
+  }
+
+  .mini-pyramid-label {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--rose-deep);
+    margin-bottom: 20px;
+  }
+
+  .mp-tier {
+    margin-bottom: 28px;
+  }
+
+  .mp-tier:last-child { margin-bottom: 0; }
+
+  .mp-tier-tag {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .mp-tier-tag .tag {
+    display: inline-block;
+    padding: 3px 12px;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 11px;
+    color: var(--rose-deep);
+    letter-spacing: 0.1em;
+  }
+
+  .mp-tier-tag .tag .ja {
+    font-family: 'Shippori Mincho', serif;
+    font-style: normal;
+    color: var(--ink-soft);
+    font-size: 10px;
+    margin-left: 6px;
+  }
+
+  .mp-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* 本人カード */
+  .mp-me {
+    background: linear-gradient(135deg, #fff, var(--pink-soft));
+    border: 2px solid var(--pink);
+    border-radius: 14px;
+    padding: 14px 18px;
+    text-align: center;
+    min-width: 140px;
+    position: relative;
+  }
+
+  .mp-me::after {
+    content: '★';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--pink);
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+  }
+
+  .mp-me-icon {
+    width: 42px;
+    height: 42px;
+    margin: 0 auto 8px;
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mp-me-icon svg {
+    width: 26px;
+    height: 26px;
+    color: #fff;
+  }
+
+  .mp-me-name {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .mp-me-amt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--rose-deep);
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  /* ポジション */
+  .mp-pos {
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 12px;
+    text-align: center;
+    min-width: 110px;
+    position: relative;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .mp-pos-multi {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(201, 162, 39, 0.4);
+  }
+
+  .mp-pos-icon {
+    width: 42px;
+    height: 42px;
+    margin: 0 auto 8px;
+    background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mp-pos-icon svg {
+    width: 26px;
+    height: 26px;
+    color: var(--gold-bright);
+    filter: drop-shadow(0 0 2px rgba(212,175,55,0.4));
+  }
+
+  .mp-pos-name {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .mp-pos-amt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--rose-deep);
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  .mp-pos-rate {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 10px;
+    color: var(--ink-dim);
+  }
+
+  /* 空状態 */
+  .mp-empty {
+    text-align: center;
+    color: var(--ink-dim);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    padding: 20px 0;
+  }
+
+  /* サマリーカード */
+  .sum-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .sum-card {
+    background: linear-gradient(135deg, var(--ivory), var(--cream));
+    border-radius: 14px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+
+  .sum-card-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--rose-deep);
+    margin-bottom: 6px;
+  }
+
+  .sum-card-val {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .sum-card-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-dim);
+    margin-top: 3px;
+  }
+
+  /* 内訳 */
+  .bt-table {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .bt-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    align-items: center;
+  }
+
+  .bt-row:last-child { border-bottom: none; }
+
+  .bt-row.total {
+    background: linear-gradient(135deg, var(--cream), var(--cream-deep));
+    font-weight: 700;
+  }
+
+  .bt-label {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  .bt-sub {
+    font-size: 10px;
+    color: var(--ink-dim);
+    margin-top: 1px;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  .bt-val {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--rose-deep);
+  }
+
+  .bt-row.total .bt-val {
+    font-size: 15px;
+    color: var(--rose-dark);
+  }
+
+  .bt-val-jpy {
+    display: block;
+    font-size: 9px;
+    color: var(--ink-dim);
+    font-weight: 500;
+    margin-top: 1px;
+  }
+
+  /* ============ NOTES ============ */
+  .notes {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--rose);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+  }
+
+  .notes-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+
+  .notes-list {
+    list-style: none;
+    font-size: 11px;
+    color: var(--ink-soft);
+    line-height: 1.85;
+  }
+
+  .notes-list li {
+    margin-bottom: 5px;
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .notes-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--rose);
+  }
+
+  footer {
+    text-align: center;
+    padding: 32px 0;
+    color: var(--ink-dim);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+  }
+
+  footer .divider {
+    width: 40px;
+    height: 1px;
+    background: var(--rose);
+    margin: 0 auto 12px;
+  }
+
+  footer .doc-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    font-size: 10px;
+    margin-top: 6px;
+    display: block;
+  }
+</style>
+
+<style>
+  .back-to-portal {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid #e4d5bd;
+    border-radius: 24px;
+    color: #a67d52;
+    text-decoration: none;
+    font-family: 'Shippori Mincho', 'Noto Sans JP', serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    box-shadow: 0 4px 16px rgba(122, 90, 58, 0.15);
+    transition: all 0.2s ease;
+  }
+  .back-to-portal:hover {
+    background: #a67d52;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(122, 90, 58, 0.25);
+  }
+  .back-to-portal svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.5;
+    transition: transform 0.2s;
+  }
+  .back-to-portal:hover svg { transform: translateX(-2px); }
+  @media (max-width: 480px) {
+    .back-to-portal {
+      top: 12px;
+      right: 12px;
+      padding: 8px 12px;
+      font-size: 11px;
+    }
+    .back-to-portal .label-jp { display: none; }
+  }
+</style>
+</head>
+<body>
+<a href="index.html" class="back-to-portal" aria-label="ポータルに戻る">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 18 L9 12 L15 6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span class="label-jp">Portal</span>
+</a>
+<div class="container">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">Income Goal Simulator</div>
+    <h1>目標月収から<br><span class="accent">ポジション構成</span>を逆算</h1>
+    <p class="hero-sub">
+      「月に◯◯万円ほしい」その目標から、<br>
+      最適な Lv.1 の組み合わせを自動で計算します。
+    </p>
+  </section>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- 左：コントロール -->
+    <div class="panel">
+      <div class="panel-label">◆ あなたの希望</div>
+
+      <div class="control-block">
+        <div class="control-title">① 目標の月収は？</div>
+        <div class="target-display">
+          <div class="label">Target Monthly Income</div>
+          <div><span class="value" id="targetYenDisp">10</span><span class="unit">万円</span></div>
+        </div>
+        <input type="range" id="targetSlider" min="5" max="100" step="1" value="10">
+        <div class="range-minmax"><span>5万円</span><span>100万円</span></div>
+      </div>
+
+      <div class="control-block">
+        <div class="control-title">② 組み立て方（戦略）</div>
+        <div class="strategy-grid">
+          <div class="strategy-card active" data-strategy="small">
+            <div class="strategy-icon">🌱</div>
+            <div class="strategy-name">小さく</div>
+            <div class="strategy-desc">ツルハシ〜ドリル中心</div>
+          </div>
+          <div class="strategy-card" data-strategy="balance">
+            <div class="strategy-icon">🌸</div>
+            <div class="strategy-name">バランス</div>
+            <div class="strategy-desc">ドリル〜ショベル</div>
+          </div>
+          <div class="strategy-card" data-strategy="bold">
+            <div class="strategy-icon">💎</div>
+            <div class="strategy-name">大胆に</div>
+            <div class="strategy-desc">ショベル〜ブルドーザー</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-block">
+        <div class="control-title">③ 為替レート</div>
+        <div class="fx-input-box">
+          <label>1 USD =</label>
+          <div class="fx-input-wrap">
+            <input type="number" id="fxInput" value="159" min="80" max="300" step="0.1">
+            <span class="unit">円</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右：結果 -->
+    <div class="panel result">
+      <div class="panel-label">◆ 最適構成の提案</div>
+
+      <div class="result-headline">
+        <div class="rh-label">Estimated Monthly Income</div>
+        <div>
+          <span class="rh-num" id="achieveYen">0</span>
+          <span class="rh-num-unit">円</span>
+        </div>
+        <div class="rh-usd" id="achieveUsd">$0</div>
+        <div class="rh-check" id="goalCheck">—</div>
+      </div>
+
+      <div class="mini-pyramid">
+        <div class="mini-pyramid-label">◆ ポジションの組み合わせ</div>
+
+        <div class="mp-tier">
+          <div class="mp-tier-tag"><span class="tag">YOU <span class="ja">本人</span></span></div>
+          <div class="mp-row">
+            <div class="mp-me">
+              <div class="mp-me-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="11" y="4" width="10" height="2.5" rx="1.25"/>
+                  <rect x="14.8" y="6.5" width="2.4" height="14"/>
+                  <path d="M10 20.5 L22 20.5 L19 28 Q16 29.2 13 28 Z"/>
+                </svg>
+              </div>
+              <div class="mp-me-name">シャベル</div>
+              <div class="mp-me-amt">$300</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mp-tier">
+          <div class="mp-tier-tag"><span class="tag">LV.1 <span class="ja">自分のポジション</span></span></div>
+          <div class="mp-row" id="lv1Row">
+            <div class="mp-empty">設定中...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sum-grid">
+        <div class="sum-card">
+          <div class="sum-card-label">Investment</div>
+          <div class="sum-card-val" id="sInvest">—</div>
+          <div class="sum-card-sub" id="sInvestUsd">—</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-card-label">Recovery</div>
+          <div class="sum-card-val" id="sRecov">—</div>
+          <div class="sum-card-sub">単純回収</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-card-label">Annual Yield</div>
+          <div class="sum-card-val" id="sYield">—</div>
+          <div class="sum-card-sub">年利回り</div>
+        </div>
+      </div>
+
+      <div class="bt-table">
+        <div class="bt-row">
+          <div>
+            <div class="bt-label">本人のマイニング</div>
+            <div class="bt-sub">シャベル $300 × 月利3.0%</div>
+          </div>
+          <div class="bt-val">$9<span class="bt-val-jpy" id="btMeJpy">約 1,431 円</span></div>
+        </div>
+        <div class="bt-row">
+          <div>
+            <div class="bt-label">Lv.1 マイニング + 直紹介20%</div>
+            <div class="bt-sub" id="btLv1Sub">—</div>
+          </div>
+          <div class="bt-val" id="btLv1Val">$0<span class="bt-val-jpy" id="btLv1Jpy">約 0 円</span></div>
+        </div>
+        <div class="bt-row total">
+          <div>
+            <div class="bt-label">月間合計</div>
+            <div class="bt-sub">年間：<span id="btAnnualSub">$0 / 0円</span></div>
+          </div>
+          <div class="bt-val" id="btTotalVal">$0<span class="bt-val-jpy" id="btTotalJpy">約 0 円</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- NOTES -->
+  <div class="notes">
+    <div class="notes-title">◆ 計算について</div>
+    <ul class="notes-list">
+      <li>本人は「シャベル $300（月利3.0%）」で固定しています。</li>
+      <li>表示される構成は、目標月収の <strong>95%以上</strong> を満たす「最小投資」の組み合わせです。</li>
+      <li>月利は設計上の想定値で、<strong>元本・利回りは保証されません</strong>。相場や運営状況で変動します。</li>
+      <li>「回収期間」は受け取った収益を全額回収に充てた場合の単純計算です（再投資は考慮せず）。</li>
+      <li>投資は余剰資金の範囲で。最終判断はご自身で行ってください。</li>
+    </ul>
+  </div>
+
+  <footer>
+    <div class="divider"></div>
+    Ronkaito Foundation &nbsp;·&nbsp; Real Asset Mining<br>
+    Income Goal Simulator
+    <span class="doc-num">RKT-SIM-2026-013</span>
+  </footer>
+
+</div>
+
+<script>
+  // ============ PASSPORT SVG ICONS ============
+  const SVGS = {
+    p: `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4 11 Q16 6 28 11 L26.5 13.5 Q22 10.8 16 11.5 Q10 10.8 5.5 13.5 Z"/><rect x="14.8" y="11" width="2.4" height="17" rx="0.5"/></svg>`,
+    d: `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="3.5" width="12" height="2.5" rx="1.25"/><rect x="9.5" y="6" width="13" height="10" rx="1.5"/><rect x="14.8" y="16" width="2.4" height="6.5"/><path d="M13 22.5 L19 22.5 L16 29 Z"/></svg>`,
+    e: `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M23 4 L29.5 6.5 L27.5 9.5 L22 7.5 Z"/><path d="M13 13 L23 6 L25 8 L15 15 Z"/><rect x="3" y="13" width="11" height="7.5" rx="1"/><rect x="2" y="21.5" width="18" height="4" rx="2"/><circle cx="5.5" cy="23.5" r="0.8" fill="#1e1e1e"/><circle cx="10" cy="23.5" r="0.8" fill="#1e1e1e"/><circle cx="14.5" cy="23.5" r="0.8" fill="#1e1e1e"/></svg>`,
+    b: `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="6" width="9" height="6.5" rx="1"/><rect x="4" y="12.5" width="17" height="7.5" rx="1"/><path d="M21 10.5 L27 8.5 L29 21.5 L21 19.5 Z"/><rect x="2" y="21.5" width="22" height="4" rx="2"/><circle cx="5.5" cy="23.5" r="0.8" fill="#1e1e1e"/><circle cx="11" cy="23.5" r="0.8" fill="#1e1e1e"/><circle cx="16.5" cy="23.5" r="0.8" fill="#1e1e1e"/><circle cx="22" cy="23.5" r="0.8" fill="#1e1e1e"/></svg>`
+  };
+
+  // ============ STRATEGIES ============
+  const STRATEGIES = {
+    small:   { big: { id:'d', name:'ドリル',       amt:3000,  rate:6.0, rev:216  },
+               small:{ id:'p', name:'ツルハシ',     amt:1000,  rate:4.5, rev:54   } },
+    balance: { big: { id:'e', name:'ショベル',     amt:10000, rate:7.5, rev:900  },
+               small:{ id:'d', name:'ドリル',       amt:3000,  rate:6.0, rev:216  } },
+    bold:    { big: { id:'b', name:'ブルドーザー', amt:40000, rate:9.0, rev:4320 },
+               small:{ id:'e', name:'ショベル',     amt:10000, rate:7.5, rev:900  } }
+  };
+
+  const ME_REV = 9;
+  const ME_INV = 300;
+
+  let state = {
+    targetMan: 10,  // 万円
+    strategy: 'small',
+    fx: 159
+  };
+
+  // ============ CALCULATION ============
+  function findBest(targetUsd, strategyKey) {
+    const s = STRATEGIES[strategyKey];
+    const threshold = targetUsd * 0.95;
+    let best = null;
+    for (let bc = 0; bc <= 15; bc++) {
+      for (let sc = 0; sc <= 30; sc++) {
+        const rev = bc * s.big.rev + sc * s.small.rev + ME_REV;
+        if (rev >= threshold) {
+          const inv = bc * s.big.amt + sc * s.small.amt + ME_INV;
+          if (!best || inv < best.inv || (inv === best.inv && (bc + sc) < (best.bc + best.sc))) {
+            best = { bc, sc, inv, rev };
+          }
+        }
+      }
+    }
+    return best;
+  }
+
+  // ============ RENDER ============
+  const fmtYen = n => Math.round(n).toLocaleString() + ' 円';
+  const fmtUsd = n => '$' + Math.round(n).toLocaleString();
+
+  function compute() {
+    const targetUsd = (state.targetMan * 10000) / state.fx;
+    const result = findBest(targetUsd, state.strategy);
+    const s = STRATEGIES[state.strategy];
+
+    // Header slider display
+    document.getElementById('targetYenDisp').textContent = state.targetMan;
+    const slider = document.getElementById('targetSlider');
+    const progress = ((state.targetMan - 5) / (100 - 5)) * 100;
+    slider.style.setProperty('--progress', progress + '%');
+
+    // Main result
+    const achieveUsd = result ? result.rev : ME_REV;
+    const achieveYen = achieveUsd * state.fx;
+    document.getElementById('achieveYen').textContent = Math.round(achieveYen / 1000) / 10 + '万';
+    document.getElementById('achieveUsd').textContent = '月 ' + fmtUsd(achieveUsd) + ' USD（実額 ' + fmtYen(achieveYen) + '）';
+
+    // Goal check
+    const target_yen = state.targetMan * 10000;
+    const rate = achieveYen / target_yen * 100;
+    const check = document.getElementById('goalCheck');
+    if (rate >= 100) {
+      check.textContent = '◎ 目標達成（' + rate.toFixed(0) + '%）';
+      check.style.color = '#7a9b6c';
+    } else if (rate >= 95) {
+      check.textContent = '○ 目標にほぼ到達（' + rate.toFixed(0) + '%）';
+      check.style.color = '#b68a4a';
+    } else {
+      check.textContent = '△ 目標未達（' + rate.toFixed(0) + '%）';
+      check.style.color = '#c5524e';
+    }
+
+    // Lv.1 Row
+    const row = document.getElementById('lv1Row');
+    row.innerHTML = '';
+    if (!result || (result.bc === 0 && result.sc === 0)) {
+      row.innerHTML = '<div class="mp-empty">（ポジション不要）</div>';
+    } else {
+      if (result.bc > 0) row.appendChild(makePosCard(s.big, result.bc));
+      if (result.sc > 0) row.appendChild(makePosCard(s.small, result.sc));
+    }
+
+    // Summary
+    const invest = result ? result.inv : ME_INV;
+    const investYen = invest * state.fx;
+    document.getElementById('sInvest').textContent = '約 ' + Math.round(investYen / 10000) + '万円';
+    document.getElementById('sInvestUsd').textContent = fmtUsd(invest);
+
+    const recov = achieveUsd > 0 ? (invest / achieveUsd).toFixed(1) : '—';
+    document.getElementById('sRecov').textContent = recov === '—' ? '—' : '約 ' + recov + 'ヶ月';
+
+    const yieldPct = invest > 0 ? (achieveUsd * 12 / invest * 100).toFixed(0) : 0;
+    document.getElementById('sYield').textContent = '約 ' + yieldPct + '%';
+
+    // Breakdown
+    document.getElementById('btMeJpy').textContent = '約 ' + fmtYen(ME_REV * state.fx);
+    const lv1Rev = result ? (result.bc * s.big.rev + result.sc * s.small.rev) : 0;
+    const lv1Bonus = lv1Rev * 0.20 / 1.20; // 実は lv1Rev の中に、マイニング+20%分は含まれず、別に計算する必要がある
+
+    // Re-calculate breakdown correctly
+    // Lv.1 の mining = bc*amt*rate + sc*amt*rate
+    // Bonus = mining * 0.20
+    // Total Lv.1 contribution = mining * 1.20
+    // Stored rev is already = amt * rate (single pos revenue = amt*rate)
+    // So bc * s.big.rev = Lv.1 big mining
+    const lv1Mining = result ? (result.bc * s.big.amt * s.big.rate/100 + result.sc * s.small.amt * s.small.rate/100) : 0;
+    const lv1BonusOnly = lv1Mining * 0.20;
+    const lv1Total = lv1Mining + lv1BonusOnly;
+
+    // 内訳テキスト
+    const parts = [];
+    if (result && result.bc > 0) parts.push(s.big.name + '×' + result.bc);
+    if (result && result.sc > 0) parts.push(s.small.name + '×' + result.sc);
+    const composition = parts.join(' + ') || '（なし）';
+    document.getElementById('btLv1Sub').textContent = composition + ' ＝ マイニング' + fmtUsd(lv1Mining) + ' + ボーナス' + fmtUsd(lv1BonusOnly);
+    document.getElementById('btLv1Val').innerHTML = fmtUsd(lv1Total) + '<span class="bt-val-jpy">約 ' + fmtYen(lv1Total * state.fx) + '</span>';
+
+    const total = ME_REV + lv1Total;
+    document.getElementById('btTotalVal').innerHTML = fmtUsd(total) + '<span class="bt-val-jpy">約 ' + fmtYen(total * state.fx) + '</span>';
+    document.getElementById('btAnnualSub').textContent = fmtUsd(total * 12) + ' / 約 ' + fmtYen(total * 12 * state.fx);
+  }
+
+  function makePosCard(psp, count) {
+    const card = document.createElement('div');
+    card.className = 'mp-pos';
+    card.innerHTML = `
+      <div class="mp-pos-multi">×${count}</div>
+      <div class="mp-pos-icon">${SVGS[psp.id]}</div>
+      <div class="mp-pos-name">${psp.name}</div>
+      <div class="mp-pos-amt">$${psp.amt.toLocaleString()} × ${count}</div>
+      <div class="mp-pos-rate">月利 ${psp.rate}%</div>
+    `;
+    return card;
+  }
+
+  // ============ EVENTS ============
+  document.getElementById('targetSlider').addEventListener('input', (e) => {
+    state.targetMan = parseInt(e.target.value);
+    compute();
+  });
+
+  document.querySelectorAll('.strategy-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.strategy-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      state.strategy = card.dataset.strategy;
+      compute();
+    });
+  });
+
+  document.getElementById('fxInput').addEventListener('input', (e) => {
+    const v = parseFloat(e.target.value);
+    if (!isNaN(v) && v > 0) {
+      state.fx = v;
+      compute();
+    }
+  });
+
+  // INIT
+  compute();
+</script>
+
+</body>
+</html>

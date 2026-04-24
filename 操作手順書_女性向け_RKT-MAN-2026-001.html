@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>はじめての Real Asset Mining シミュレーター｜やさしい操作ガイド</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ivory: #faf5ec;
+    --cream: #f3e9d8;
+    --rose: #c9a47a;
+    --rose-deep: #a67d52;
+    --rose-dark: #7a5a3a;
+    --ink: #3d2f24;
+    --ink-soft: #6e5a48;
+    --ink-dim: #a89584;
+    --pink: #e8b5a8;
+    --pink-soft: #f5d8ce;
+    --gold: #c9a227;
+    --sage: #8ba886;
+    --line: #e4d5bd;
+  }
+
+  body {
+    background: var(--ivory);
+    color: var(--ink);
+    font-family: 'Noto Sans JP', sans-serif;
+    line-height: 1.8;
+    letter-spacing: 0.02em;
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(232, 181, 168, 0.12) 0%, transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(201, 164, 122, 0.08) 0%, transparent 40%);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.2;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.6 0 0 0 0 0.5 0 0 0 0 0.4 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    text-align: center;
+    padding: 48px 0 56px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: 0.25em;
+    color: var(--rose-deep);
+    margin-bottom: 20px;
+  }
+
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--rose);
+    vertical-align: middle;
+    margin: 0 12px;
+  }
+
+  .hero h1 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: clamp(24px, 7vw, 34px);
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  .hero .accent {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--rose-deep);
+    font-weight: 500;
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 2;
+  }
+
+  .hero-time {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 6px 18px;
+    background: linear-gradient(135deg, var(--cream), var(--pink-soft));
+    border-radius: 20px;
+    font-family: 'Shippori Mincho', serif;
+    font-size: 12px;
+    color: var(--rose-dark);
+    letter-spacing: 0.08em;
+    border: 1px solid var(--line);
+  }
+
+  /* ============ INTRO ============ */
+  .intro {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: 0 8px 32px rgba(122, 90, 58, 0.08);
+    margin-bottom: 48px;
+    border: 1px solid var(--line);
+  }
+
+  .intro-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    color: var(--rose-deep);
+    margin-bottom: 8px;
+  }
+
+  .intro h2 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+
+  .intro-list {
+    list-style: none;
+  }
+
+  .intro-list li {
+    padding: 12px 0 12px 32px;
+    position: relative;
+    border-bottom: 1px dashed var(--line);
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.7;
+  }
+
+  .intro-list li:last-child { border-bottom: none; }
+
+  .intro-list li::before {
+    content: '✿';
+    position: absolute;
+    left: 4px;
+    top: 12px;
+    color: var(--pink);
+    font-size: 14px;
+  }
+
+  .intro-list strong {
+    color: var(--rose-deep);
+    font-weight: 700;
+  }
+
+  /* ============ STEP CARD ============ */
+  .steps {
+    position: relative;
+  }
+
+  /* 縦の時間軸ライン */
+  .steps::before {
+    content: '';
+    position: absolute;
+    left: 30px;
+    top: 40px;
+    bottom: 40px;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, var(--rose) 10%, var(--rose) 90%, transparent);
+    opacity: 0.3;
+    z-index: 0;
+  }
+
+  .step {
+    position: relative;
+    padding-left: 72px;
+    margin-bottom: 56px;
+    z-index: 1;
+  }
+
+  .step-num {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 62px;
+    height: 62px;
+    background: linear-gradient(135deg, #fff, var(--cream));
+    border: 2px solid var(--rose);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    box-shadow: 0 4px 16px rgba(122, 90, 58, 0.12);
+    z-index: 2;
+  }
+
+  .step-num .label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 9px;
+    color: var(--rose-deep);
+    letter-spacing: 0.15em;
+    margin-bottom: -2px;
+  }
+
+  .step-num .n {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 26px;
+    color: var(--rose-dark);
+    line-height: 1;
+  }
+
+  .step h3 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.4;
+    padding-top: 12px;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.9;
+    margin-bottom: 16px;
+  }
+
+  .step-desc strong {
+    color: var(--rose-deep);
+    font-weight: 700;
+  }
+
+  /* UI モック */
+  .ui-mock {
+    background: linear-gradient(135deg, #fff 0%, var(--ivory) 100%);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 16px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .ui-mock-label {
+    position: absolute;
+    top: -9px;
+    left: 16px;
+    background: var(--ivory);
+    padding: 0 10px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 10px;
+    color: var(--rose-deep);
+    letter-spacing: 0.15em;
+  }
+
+  /* 矢印 */
+  .arrow {
+    position: absolute;
+    color: var(--rose-deep);
+    font-size: 24px;
+    font-weight: 700;
+    animation: bounce 1.5s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  /* ワンポイント */
+  .tip {
+    background: linear-gradient(135deg, var(--pink-soft), #fdf2ec);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.8;
+  }
+
+  .tip-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .tip strong {
+    color: var(--rose-deep);
+    font-weight: 700;
+  }
+
+  /* ============ CHIP (UI要素) ============ */
+  .chip-row-mock {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .chip-mock {
+    flex: 1;
+    min-width: 60px;
+    max-width: 80px;
+    padding: 10px 6px;
+    background: var(--ivory);
+    border: 1.5px solid transparent;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 10px;
+  }
+
+  .chip-mock.active {
+    background: #fff;
+    border-color: var(--rose-deep);
+    color: var(--rose-deep);
+    box-shadow: 0 2px 8px rgba(122, 90, 58, 0.15);
+  }
+
+  .chip-mock .icon-box {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+    border-radius: 6px;
+    margin: 0 auto 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .chip-mock .icon-box svg {
+    width: 20px;
+    height: 20px;
+    color: #f2cc55;
+  }
+
+  .chip-mock .name {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 600;
+    font-size: 10px;
+    color: var(--ink);
+  }
+
+  .chip-mock.active .name { color: var(--rose-deep); }
+
+  .chip-mock .amt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-dim);
+    margin-top: 2px;
+  }
+
+  /* タイトルチップ */
+  .chip-title-mock {
+    flex: 1;
+    padding: 8px 4px;
+    background: var(--ivory);
+    border: 1.5px solid transparent;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .chip-title-mock.active {
+    background: #fff;
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: 0 2px 8px rgba(201, 162, 39, 0.15);
+  }
+
+  .chip-title-mock .rate {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-dim);
+    margin-top: 2px;
+  }
+
+  /* FX入力 */
+  .fx-mock {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--ivory);
+    border-radius: 10px;
+  }
+
+  .fx-mock-label {
+    font-size: 11px;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+  }
+
+  .fx-mock-input {
+    flex: 1;
+    background: #fff;
+    border: 1.5px solid var(--rose-deep);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--rose-deep);
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .fx-mock-input .unit {
+    font-size: 10px;
+    color: var(--ink-dim);
+  }
+
+  /* カウンター行 */
+  .counter-mock {
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    align-items: center;
+    position: relative;
+  }
+
+  .counter-mock + .counter-mock { margin-top: 6px; }
+
+  .counter-mock.highlight {
+    border-color: var(--rose);
+    box-shadow: 0 0 0 3px rgba(201, 164, 122, 0.15);
+  }
+
+  .counter-mock-icon {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .counter-mock-icon svg {
+    width: 18px;
+    height: 18px;
+    color: #f2cc55;
+  }
+
+  .counter-mock-info {
+    font-size: 11px;
+  }
+
+  .counter-mock-info .name {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .counter-mock-info .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-dim);
+    margin-top: 1px;
+  }
+
+  .counter-mock-ctrl {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+  }
+
+  .cbtn {
+    width: 22px;
+    height: 22px;
+    background: var(--ivory);
+    border: none;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cbtn.plus {
+    background: var(--rose);
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(201, 164, 122, 0.2);
+  }
+
+  .cval {
+    min-width: 20px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--rose-deep);
+  }
+
+  /* トグル */
+  .toggle-mock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--ivory);
+    border-radius: 10px;
+  }
+
+  .toggle-mock-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+
+  .toggle-switch {
+    width: 38px;
+    height: 22px;
+    background: var(--gold);
+    border-radius: 11px;
+    position: relative;
+  }
+
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 18px;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  /* 結果モック */
+  .result-mock {
+    text-align: center;
+    padding: 18px 0;
+    border-top: 1px dashed var(--line);
+  }
+
+  .result-mock-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--rose-deep);
+    margin-bottom: 6px;
+  }
+
+  .result-mock-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 32px;
+    color: var(--rose-deep);
+    line-height: 1;
+  }
+
+  .result-mock-jpy {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+
+  /* ミニピラミッド */
+  .mini-pyramid {
+    padding: 16px 0;
+    text-align: center;
+  }
+
+  .mini-tier {
+    margin-bottom: 14px;
+  }
+
+  .mini-tier-tag {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 10px;
+    color: var(--rose-deep);
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+  }
+
+  .mini-avatars {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    align-items: flex-end;
+  }
+
+  .mini-av {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #5ba0d0, #3a7ca8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 10px;
+  }
+
+  .mini-av.me {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    font-size: 16px;
+  }
+
+  .mini-av.self {
+    background: linear-gradient(135deg, #f2cc55, var(--gold));
+    color: var(--ink);
+  }
+
+  /* ============ FAQ ============ */
+  .faq {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px 28px;
+    box-shadow: 0 8px 32px rgba(122, 90, 58, 0.08);
+    border: 1px solid var(--line);
+    margin-bottom: 32px;
+  }
+
+  .faq-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    text-align: center;
+    color: var(--ink);
+  }
+
+  .faq-title .accent {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--rose-deep);
+  }
+
+  .faq-item {
+    padding: 16px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .faq-item:last-child { border-bottom: none; }
+
+  .faq-q {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .faq-q-mark {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    background: var(--rose);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  .faq-a {
+    padding-left: 34px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.85;
+  }
+
+  .faq-a strong { color: var(--rose-deep); }
+
+  /* ============ FOOTER ============ */
+  footer {
+    text-align: center;
+    padding: 32px 0 48px;
+    color: var(--ink-dim);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+  }
+
+  footer .divider {
+    width: 40px;
+    height: 1px;
+    background: var(--rose);
+    margin: 0 auto 12px;
+  }
+
+  footer .doc-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    font-size: 10px;
+    color: var(--ink-dim);
+    margin-top: 6px;
+    display: block;
+  }
+</style>
+
+<style>
+  .back-to-portal {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid #e4d5bd;
+    border-radius: 24px;
+    color: #a67d52;
+    text-decoration: none;
+    font-family: 'Shippori Mincho', 'Noto Sans JP', serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    box-shadow: 0 4px 16px rgba(122, 90, 58, 0.15);
+    transition: all 0.2s ease;
+  }
+  .back-to-portal:hover {
+    background: #a67d52;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(122, 90, 58, 0.25);
+  }
+  .back-to-portal svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.5;
+    transition: transform 0.2s;
+  }
+  .back-to-portal:hover svg { transform: translateX(-2px); }
+  @media (max-width: 480px) {
+    .back-to-portal {
+      top: 12px;
+      right: 12px;
+      padding: 8px 12px;
+      font-size: 11px;
+    }
+    .back-to-portal .label-jp { display: none; }
+  }
+</style>
+</head>
+<body>
+<a href="index.html" class="back-to-portal" aria-label="ポータルに戻る">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 18 L9 12 L15 6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span class="label-jp">Portal</span>
+</a>
+<div class="container">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero-eyebrow">For Beginners · Easy Guide</div>
+    <h1>
+      はじめての<br>
+      <span class="accent">Real Asset Mining</span><br>
+      シミュレーター
+    </h1>
+    <p class="hero-sub">女性のための、やさしい操作ガイド<br>見ながら触って、3分でマスター</p>
+    <div class="hero-time">◆ 所要時間 : およそ 3 分 ◆</div>
+  </section>
+
+  <!-- ============ INTRO ============ -->
+  <section class="intro">
+    <div class="intro-label">◆ WHAT YOU CAN DO</div>
+    <h2>このシミュレーターでわかること</h2>
+    <ul class="intro-list">
+      <li><strong>将来の月収のイメージ</strong>を、ドルと円の両方で確認できます。</li>
+      <li><strong>必要な投資額</strong>を、組み合わせごとに計算してくれます。</li>
+      <li>ポジションの組み合わせを変えると、<strong>ピラミッド図</strong>がリアルタイムで動きます。</li>
+      <li>はじめての方でも、<strong>＋・− ボタン</strong>だけで操作できます。</li>
+    </ul>
+  </section>
+
+  <!-- ============ STEPS ============ -->
+  <section class="steps">
+
+    <!-- STEP 1 -->
+    <div class="step">
+      <div class="step-num">
+        <div class="label">STEP</div>
+        <div class="n">1</div>
+      </div>
+      <h3>シミュレーターを開く</h3>
+      <p class="step-desc">
+        まずはシミュレーターの画面を開いてください。スマホでもパソコンでも、どちらでも使えます。
+      </p>
+      <div class="tip">
+        <div class="tip-icon">!</div>
+        <div>画面の<strong>左側</strong>に「あなたのネットワーク」の図、<strong>右側</strong>に操作パネルが並んでいます。</div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <div class="step-num">
+        <div class="label">STEP</div>
+        <div class="n">2</div>
+      </div>
+      <h3>本人のパスポートを選ぶ</h3>
+      <p class="step-desc">
+        操作パネル上部の「<strong>本人</strong>」の欄で、スタートするパスポートを選びます。まずは一番左の<strong>シャベル（$300）</strong>でOK。
+      </p>
+      <div class="ui-mock">
+        <span class="ui-mock-label">◆ 本人 · パスポート</span>
+        <div class="chip-row-mock">
+          <div class="chip-mock active">
+            <div class="icon-box">
+              <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <rect x="11" y="4" width="10" height="2.5" rx="1.25"/>
+                <rect x="14.8" y="6.5" width="2.4" height="14"/>
+                <path d="M10 20.5 L22 20.5 L19 28 Q16 29.2 13 28 Z"/>
+              </svg>
+            </div>
+            <div class="name">シャベル</div>
+            <div class="amt">$300</div>
+          </div>
+          <div class="chip-mock">
+            <div class="icon-box">
+              <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 11 Q16 6 28 11 L26.5 13.5 Q22 10.8 16 11.5 Q10 10.8 5.5 13.5 Z"/>
+                <rect x="14.8" y="11" width="2.4" height="17" rx="0.5"/>
+              </svg>
+            </div>
+            <div class="name">ツルハシ</div>
+            <div class="amt">$1k</div>
+          </div>
+          <div class="chip-mock">
+            <div class="icon-box">
+              <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="3.5" width="12" height="2.5" rx="1.25"/>
+                <rect x="9.5" y="6" width="13" height="10" rx="1.5"/>
+                <rect x="14.8" y="16" width="2.4" height="6.5"/>
+                <path d="M13 22.5 L19 22.5 L16 29 Z"/>
+              </svg>
+            </div>
+            <div class="name">ドリル</div>
+            <div class="amt">$3k</div>
+          </div>
+          <div class="chip-mock">
+            <div class="icon-box">
+              <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M23 4 L29.5 6.5 L27.5 9.5 L22 7.5 Z"/>
+                <path d="M13 13 L23 6 L25 8 L15 15 Z"/>
+                <rect x="3" y="13" width="11" height="7.5" rx="1"/>
+                <rect x="2" y="21.5" width="18" height="4" rx="2"/>
+              </svg>
+            </div>
+            <div class="name">ショベル</div>
+            <div class="amt">$10k</div>
+          </div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">♡</div>
+        <div>タップすると色が変わり、<strong>選ばれた状態</strong>になります。あとから何度でも変更できるので、気軽に選んでみて。</div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <div class="step-num">
+        <div class="label">STEP</div>
+        <div class="n">3</div>
+      </div>
+      <h3>タイトルは「ノーマル」のままで</h3>
+      <p class="step-desc">
+        パスポートのすぐ下の「<strong>タイトル</strong>」は、最初は<strong>ノーマル</strong>のままでOK。これは実績に応じて後からついてくるものなので、今は気にしないで大丈夫です。
+      </p>
+      <div class="ui-mock">
+        <span class="ui-mock-label">◆ 本人 · タイトル</span>
+        <div class="chip-row-mock">
+          <div class="chip-title-mock active">
+            ノーマル
+            <div class="rate">0%</div>
+          </div>
+          <div class="chip-title-mock">
+            L1
+            <div class="rate">1.0%</div>
+          </div>
+          <div class="chip-title-mock">
+            L2
+            <div class="rate">2.0%</div>
+          </div>
+          <div class="chip-title-mock">
+            L3
+            <div class="rate">3.0%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step">
+      <div class="step-num">
+        <div class="label">STEP</div>
+        <div class="n">4</div>
+      </div>
+      <h3>為替レートを確認する</h3>
+      <p class="step-desc">
+        「<strong>1 USD = 159 円</strong>」と入っていればそのままでOK。円換算の金額を自分に合わせたい時は、数字を書き換えてください。
+      </p>
+      <div class="ui-mock">
+        <span class="ui-mock-label">◆ 為替レート</span>
+        <div class="fx-mock">
+          <span class="fx-mock-label">1 USD =</span>
+          <div class="fx-mock-input">
+            <span>159</span>
+            <span class="unit">円</span>
+          </div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">$</div>
+        <div>為替レートが変わると、画面下の<strong>円表示が全部連動</strong>して更新されます。</div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step">
+      <div class="step-num">
+        <div class="label">STEP</div>
+        <div class="n">5</div>
+      </div>
+      <h3>Lv.1 のポジションを増やす</h3>
+      <p class="step-desc">
+        「<strong>Lv.1 · 直紹介</strong>」の欄で、お試ししたいパスポートの<strong>「＋」ボタン</strong>を押します。押した分だけ、左のピラミッドに人が増えていきます。
+      </p>
+      <div class="ui-mock">
+        <span class="ui-mock-label">◆ Lv.1 · パスポート別人数</span>
+        <div class="counter-mock highlight">
+          <div class="counter-mock-icon">
+            <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <rect x="10" y="3.5" width="12" height="2.5" rx="1.25"/>
+              <rect x="9.5" y="6" width="13" height="10" rx="1.5"/>
+              <rect x="14.8" y="16" width="2.4" height="6.5"/>
+              <path d="M13 22.5 L19 22.5 L16 29 Z"/>
+            </svg>
+          </div>
+          <div class="counter-mock-info">
+            <div class="name">ドリル</div>
+            <div class="meta">$3,000 · 月利6.0%</div>
+          </div>
+          <div class="counter-mock-ctrl">
+            <button class="cbtn">−</button>
+            <div class="cval">3</div>
+            <button class="cbtn plus">＋</button>
+          </div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">+</div>
+        <div>間違えたら<strong>「−」ボタン</strong>で減らせるので安心。遠慮なく押してみてください。</div>
+      </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="step">
+      <div class="step-num">
+        <div class="label">STEP</div>
+        <div class="n">6</div>
+      </div>
+      <h3>自己アフィリエイトを「オン」に</h3>
+      <p class="step-desc">
+        「<strong>自分で複数ポジションを持つ</strong>」のスイッチを右に動かしてオンにします。すると、Lv.1 のうち何個が自分のアカウントかを指定できるようになります。
+      </p>
+      <div class="ui-mock">
+        <span class="ui-mock-label">◆ 自己アフィリエイト</span>
+        <div class="toggle-mock">
+          <span class="toggle-mock-label">自分で複数ポジションを持つ</span>
+          <div class="toggle-switch"></div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">★</div>
+        <div>自分名義のポジションは、ピラミッド上で<strong>金色に</strong>なり、小さな「自」マークが付きます。すぐに見分けがつきます。</div>
+      </div>
+    </div>
+
+    <!-- STEP 7 -->
+    <div class="step">
+      <div class="step-num">
+        <div class="label">STEP</div>
+        <div class="n">7</div>
+      </div>
+      <h3>結果を確認する</h3>
+      <p class="step-desc">
+        左側のピラミッドに人が並んだら、その下に「<strong>あなたの月間収益</strong>」が表示されています。ドルと円、両方見られます。
+      </p>
+      <div class="ui-mock">
+        <span class="ui-mock-label">◆ ネットワーク + 月間収益</span>
+        <div class="mini-pyramid">
+          <div class="mini-tier">
+            <div class="mini-tier-tag">YOU · 本人</div>
+            <div class="mini-avatars">
+              <div class="mini-av me">♡</div>
+            </div>
+          </div>
+          <div class="mini-tier">
+            <div class="mini-tier-tag">LV.1 · 自分のポジション</div>
+            <div class="mini-avatars">
+              <div class="mini-av self">自</div>
+              <div class="mini-av self">自</div>
+              <div class="mini-av self">自</div>
+            </div>
+          </div>
+        </div>
+        <div class="result-mock">
+          <div class="result-mock-label">MONTHLY INCOME</div>
+          <div class="result-mock-num">$657</div>
+          <div class="result-mock-jpy">約 104,463 円</div>
+        </div>
+      </div>
+      <div class="tip">
+        <div class="tip-icon">◎</div>
+        <div>画面をさらに下にスクロールすると、<strong>「収益の内訳」</strong>で計算の中身も確認できます。</div>
+      </div>
+    </div>
+
+    <!-- STEP 8 -->
+    <div class="step">
+      <div class="step-num">
+        <div class="label">STEP</div>
+        <div class="n">8</div>
+      </div>
+      <h3>自分の理想に近づけていく</h3>
+      <p class="step-desc">
+        あとは<strong>「＋」「−」ボタン</strong>を何度か押して、いろいろな組み合わせを試してみてください。月収の数字がリアルタイムで変わるので、自分の理想の月収に合わせて調整できます。
+      </p>
+      <div class="tip">
+        <div class="tip-icon">✿</div>
+        <div>目標の金額が決まったら、その組み合わせを<strong>スクリーンショット</strong>で保存しておくと、後で見返せて便利です。</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="faq">
+    <h2 class="faq-title">よくある <span class="accent">ご質問</span></h2>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <div class="faq-q-mark">Q</div>
+        <div>パスポートって何ですか？</div>
+      </div>
+      <div class="faq-a">
+        採掘（マイニング）の規模を決めるプランの名前です。「<strong>シャベル</strong>」（$300）が一番小さく、「<strong>ブルドーザー</strong>」（$40,000）が一番大きい。金額が大きいほど、月利（月のリターン率）も高くなります。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <div class="faq-q-mark">Q</div>
+        <div>Lv.1 と Lv.2 は何が違うの？</div>
+      </div>
+      <div class="faq-a">
+        <strong>Lv.1</strong> は「自分が直接つながる階層」、<strong>Lv.2</strong> はその下の階層です。報酬率は Lv.1 が 20%、Lv.2 が 10% なので、<strong>Lv.1 に集中する方が効率的</strong>です。初めての方は Lv.1 だけで組むのが分かりやすいです。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <div class="faq-q-mark">Q</div>
+        <div>自己アフィリエイトって、自分で自分を紹介するってこと？</div>
+      </div>
+      <div class="faq-a">
+        そうです。<strong>自分名義で複数のポジション</strong>を持つことで、紹介者を集めなくても報酬を最大化できる仕組みです。シミュレーターでは、Lv.1 の人数のうち何個が自分のものかを指定できます。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <div class="faq-q-mark">Q</div>
+        <div>この数字、本当に毎月もらえるの？</div>
+      </div>
+      <div class="faq-a">
+        シミュレーターの数字は、<strong>月利が一定という前提</strong>での試算です。実際の収益は相場や運営状況で変動しますし、元本や利回りが保証されるものではありません。あくまで<strong>「目安」</strong>としてご覧ください。
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="divider"></div>
+    Ronkaito Foundation &nbsp;·&nbsp; Real Asset Mining<br>
+    Simulator User Guide for Women
+    <span class="doc-num">RKT-MAN-2026-001</span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Asset Mining ビジュアルシミュレーター</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f5f2ec;
+    --bg-card: #ffffff;
+    --ink: #1a1a1a;
+    --ink-soft: #555;
+    --ink-dim: #888;
+    --line: #e5e0d5;
+    --me: #c8853a;
+    --me-bright: #e4a352;
+    --direct: #3a7ca8;
+    --direct-bright: #5ba0d0;
+    --second: #6ba368;
+    --second-bright: #8bc788;
+    --gold: #d4af37;
+    --gold-bright: #f2cc55;
+    --danger: #c5524e;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans JP', sans-serif;
+    min-height: 100vh;
+    padding: 20px;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(200,133,58,0.06) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(58,124,168,0.05) 0%, transparent 40%);
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; }
+  header { text-align: center; padding: 24px 0 32px; }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--me);
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .subtitle { font-size: 13px; color: var(--ink-dim); }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  .pyramid-box {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pyramid-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--me), var(--direct), var(--second));
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--ink-dim);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .pyramid {
+    position: relative;
+    min-height: 440px;
+    padding: 20px 10px;
+  }
+
+  .tier {
+    position: relative;
+    margin-bottom: 32px;
+  }
+
+  .tier-label {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-dim);
+    letter-spacing: 0.15em;
+    writing-mode: vertical-rl;
+  }
+
+  .tier-header {
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-dim);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .tier-header .tier-stats {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    background: var(--bg);
+    border-radius: 10px;
+    margin-left: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 11px;
+    vertical-align: middle;
+  }
+
+  .tier-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-left: 30px;
+    align-items: flex-end;
+  }
+
+  .person {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .person-avatar {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: transform 0.2s;
+    color: white;
+  }
+
+  .person:hover .person-avatar { transform: translateY(-2px); }
+
+  .person-amount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    color: var(--ink-soft);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .tier-me .person-avatar {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, var(--me-bright), var(--me));
+    box-shadow: 0 6px 24px rgba(200,133,58,0.4);
+    font-size: 32px;
+  }
+
+  .tier-me .person-avatar::after {
+    content: '★';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(212,175,55,0.5);
+  }
+
+  .tier-me .person-amount {
+    font-size: 12px;
+    color: var(--me);
+    font-weight: 900;
+    margin-top: 6px;
+  }
+
+  .psp-s .person-avatar { width: 26px; height: 26px; font-size: 12px; }
+  .psp-p .person-avatar { width: 32px; height: 32px; font-size: 14px; }
+  .psp-d .person-avatar { width: 38px; height: 38px; font-size: 18px; }
+  .psp-e .person-avatar { width: 46px; height: 46px; font-size: 22px; }
+  .psp-b .person-avatar { width: 54px; height: 54px; font-size: 26px; }
+
+  .tier-direct .person-avatar {
+    background: linear-gradient(135deg, var(--direct-bright), var(--direct));
+    box-shadow: 0 3px 12px rgba(58,124,168,0.3);
+  }
+
+  .tier-second .person-avatar {
+    background: linear-gradient(135deg, var(--second-bright), var(--second));
+    box-shadow: 0 3px 12px rgba(107,163,104,0.3);
+  }
+
+  .tier-second .psp-s .person-avatar { width: 22px; height: 22px; font-size: 10px; }
+  .tier-second .psp-p .person-avatar { width: 26px; height: 26px; font-size: 12px; }
+  .tier-second .psp-d .person-avatar { width: 32px; height: 32px; font-size: 15px; }
+  .tier-second .psp-e .person-avatar { width: 38px; height: 38px; font-size: 18px; }
+  .tier-second .psp-b .person-avatar { width: 44px; height: 44px; font-size: 22px; }
+
+  .person-self .person-avatar {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold)) !important;
+    box-shadow: 0 3px 12px rgba(212,175,55,0.5) !important;
+  }
+
+  .person-self .person-avatar::after {
+    content: '自';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 16px;
+    height: 16px;
+    background: var(--me);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 900;
+    box-shadow: 0 2px 4px rgba(200,133,58,0.5);
+  }
+
+  .person-self .person-amount { color: var(--me); font-weight: 900; }
+
+  .money-particle {
+    position: absolute;
+    font-size: 14px;
+    pointer-events: none;
+    animation: moneyFlow 2.5s ease-in-out infinite;
+    color: var(--gold);
+    text-shadow: 0 0 8px rgba(212,175,55,0.6);
+  }
+
+  @keyframes moneyFlow {
+    0% { opacity: 0; transform: translateY(0) scale(0.5); }
+    20% { opacity: 1; transform: translateY(-10px) scale(1); }
+    80% { opacity: 1; transform: translateY(-160px) scale(1); }
+    100% { opacity: 0; transform: translateY(-180px) scale(0.5); }
+  }
+
+  .psp-group-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-dim);
+    font-weight: 700;
+    text-align: center;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
+
+  .result-center {
+    text-align: center;
+    padding: 20px 0 8px;
+    background: linear-gradient(180deg, transparent, rgba(200,133,58,0.04));
+    border-top: 1px dashed var(--line);
+    margin-top: 12px;
+  }
+
+  .result-label {
+    font-size: 11px;
+    color: var(--ink-dim);
+    letter-spacing: 0.2em;
+    margin-bottom: 6px;
+  }
+
+  .result-total {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(32px, 5vw, 44px);
+    font-weight: 700;
+    color: var(--me);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .result-jpy { font-size: 13px; color: var(--ink-soft); font-weight: 500; }
+
+  .controls {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .control-group {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .control-group:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  .control-group-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sub-label {
+    font-size: 10px;
+    color: var(--ink-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    margin-top: 12px;
+    text-transform: uppercase;
+  }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-me { background: var(--me); }
+  .dot-direct { background: var(--direct); }
+  .dot-second { background: var(--second); }
+  .dot-gold { background: var(--gold); }
+
+  .counter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .counter-row {
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    background: var(--bg);
+    border-radius: 8px;
+    border: 1.5px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .counter-row.has-count {
+    background: white;
+    border-color: var(--line);
+  }
+
+  .counter-row.has-self {
+    background: linear-gradient(90deg, rgba(212,175,55,0.12), rgba(212,175,55,0.04));
+    border-color: var(--gold);
+    position: relative;
+  }
+
+  .counter-row.has-self::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    border-radius: 3px 0 0 3px;
+  }
+
+  .self-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--me);
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    padding: 2px 6px;
+    border-radius: 8px;
+    margin-top: 2px;
+    box-shadow: 0 1px 3px rgba(212,175,55,0.3);
+    width: fit-content;
+  }
+
+  .self-badge-icon { font-size: 8px; }
+
+  .counter-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .counter-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  .counter-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .counter-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-dim);
+  }
+
+  .counter-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .counter-btn {
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .counter-btn:hover:not(:disabled) {
+    background: var(--me);
+    color: white;
+  }
+
+  .counter-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .counter-row.direct .counter-btn:hover:not(:disabled) { background: var(--direct); }
+  .counter-row.second .counter-btn:hover:not(:disabled) { background: var(--second); }
+  .counter-row.self .counter-btn:hover:not(:disabled) { background: var(--gold); color: var(--ink); }
+
+  .counter-value {
+    min-width: 28px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .counter-row.has-count.direct .counter-value { color: var(--direct); }
+  .counter-row.has-count.second .counter-value { color: var(--second); }
+  .counter-row.has-count.self .counter-value { color: var(--gold); }
+
+  .tier-summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: linear-gradient(135deg, rgba(58,124,168,0.08), rgba(58,124,168,0.02));
+    border-radius: 8px;
+    font-size: 11px;
+  }
+
+  .tier-summary.second {
+    background: linear-gradient(135deg, rgba(107,163,104,0.08), rgba(107,163,104,0.02));
+  }
+
+  .tier-summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    text-align: center;
+    flex: 1;
+  }
+
+  .tier-summary-label {
+    font-size: 9px;
+    color: var(--ink-dim);
+    letter-spacing: 0.05em;
+  }
+
+  .tier-summary-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip {
+    flex: 1;
+    min-width: 72px;
+    padding: 8px 6px;
+    background: var(--bg);
+    border: 1.5px solid transparent;
+    border-radius: 8px;
+    font-size: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    font-weight: 600;
+  }
+
+  .chip:hover { background: #ebe6db; }
+  .chip.active {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .chip-me.active { border-color: var(--me); color: var(--me); }
+  .chip-me.active .chip-amount { color: var(--me); }
+
+  .chip-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+
+  .psp-card {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 4px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 1px 3px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .psp-card::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 5px;
+    background: radial-gradient(circle at 30% 30%, rgba(212,175,55,0.08), transparent 60%);
+    pointer-events: none;
+  }
+
+  .psp-card svg {
+    width: 24px;
+    height: 24px;
+    color: #f2cc55;
+    filter: drop-shadow(0 0 2px rgba(212,175,55,0.3));
+    position: relative;
+    z-index: 1;
+  }
+
+  .psp-card-sm {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 1px 2px rgba(0,0,0,0.15);
+    flex-shrink: 0;
+  }
+
+  .psp-card-sm svg {
+    width: 18px;
+    height: 18px;
+    color: #f2cc55;
+    filter: drop-shadow(0 0 1px rgba(212,175,55,0.4));
+  }
+
+  .psp-card-xs {
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, #1e1e1e, #2d2d2d);
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  .psp-card-xs svg {
+    width: 14px;
+    height: 14px;
+    color: #f2cc55;
+  }
+
+  .chip-amount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-dim);
+    margin-top: 2px;
+  }
+
+  .chip-rate {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    font-weight: 700;
+    margin-top: 1px;
+  }
+
+  .chip-title { min-width: 50px; padding: 6px 6px; }
+  .chip-title.active { border-color: var(--gold); color: var(--gold); }
+
+  .fx-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 10px;
+    margin-top: 12px;
+  }
+
+  .fx-box-label {
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+  }
+
+  .fx-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: white;
+    border-radius: 6px;
+    padding: 4px 10px;
+    flex: 1;
+    border: 1.5px solid transparent;
+  }
+
+  .fx-input-wrap:focus-within { border-color: var(--me); }
+
+  .fx-input-wrap input {
+    border: none;
+    outline: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--me);
+    width: 100%;
+    background: transparent;
+    text-align: right;
+  }
+
+  .fx-input-wrap .unit { font-size: 11px; color: var(--ink-dim); font-weight: 600; }
+
+  .fx-hint {
+    font-size: 9px;
+    color: var(--ink-dim);
+    margin-top: 4px;
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .toggle-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .toggle-wrap:hover { background: #ebe6db; }
+  .toggle-label { font-size: 12px; font-weight: 600; color: var(--ink-soft); }
+
+  .toggle {
+    width: 38px;
+    height: 22px;
+    background: #ccc;
+    border-radius: 11px;
+    position: relative;
+    transition: background 0.25s;
+    flex-shrink: 0;
+  }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: left 0.25s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .toggle.on { background: var(--gold); }
+  .toggle.on::after { left: 18px; }
+
+  .self-aff-content {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease;
+  }
+
+  .self-aff-content.open {
+    max-height: 1000px;
+    margin-top: 12px;
+  }
+
+  .self-aff-note {
+    font-size: 11px;
+    color: var(--me);
+    background: rgba(212,175,55,0.08);
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+
+  .self-aff-level-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-dim);
+    letter-spacing: 0.1em;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .self-summary {
+    background: linear-gradient(135deg, #fff8e7, #fef0cc);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    display: none;
+    border-left: 4px solid var(--gold);
+  }
+
+  .self-summary.active { display: block; }
+
+  .self-summary-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--me);
+    margin-bottom: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .self-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .self-summary-cell {
+    text-align: center;
+    padding: 8px;
+    background: white;
+    border-radius: 8px;
+  }
+
+  .self-summary-cell-label {
+    font-size: 9px;
+    color: var(--ink-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+
+  .self-summary-cell-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--me);
+  }
+
+  .self-summary-cell-sub { font-size: 9px; color: var(--ink-dim); margin-top: 2px; }
+
+  .self-summary-cell-jpy {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    margin-top: 3px;
+  }
+
+  .breakdown {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-top: 20px;
+  }
+
+  .breakdown-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--line);
+    align-items: center;
+  }
+
+  .breakdown-row.total {
+    border-bottom: none;
+    padding-top: 16px;
+    margin-top: 4px;
+    border-top: 2px solid var(--ink);
+    font-weight: 700;
+  }
+
+  .breakdown-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .breakdown-label { font-size: 13px; }
+
+  .breakdown-label-sub {
+    font-size: 10px;
+    color: var(--ink-dim);
+    margin-top: 2px;
+  }
+
+  .breakdown-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    text-align: right;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .breakdown-value-jpy {
+    display: block;
+    font-size: 10px;
+    color: var(--ink-dim);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 24px 0;
+    font-size: 11px;
+    color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>
+
+<style>
+  .back-to-portal {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid #e4d5bd;
+    border-radius: 24px;
+    color: #a67d52;
+    text-decoration: none;
+    font-family: 'Shippori Mincho', 'Noto Sans JP', serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    box-shadow: 0 4px 16px rgba(122, 90, 58, 0.15);
+    transition: all 0.2s ease;
+  }
+  .back-to-portal:hover {
+    background: #a67d52;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(122, 90, 58, 0.25);
+  }
+  .back-to-portal svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.5;
+    transition: transform 0.2s;
+  }
+  .back-to-portal:hover svg { transform: translateX(-2px); }
+  @media (max-width: 480px) {
+    .back-to-portal {
+      top: 12px;
+      right: 12px;
+      padding: 8px 12px;
+      font-size: 11px;
+    }
+    .back-to-portal .label-jp { display: none; }
+  }
+</style>
+</head>
+<body>
+<a href="index.html" class="back-to-portal" aria-label="ポータルに戻る">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 18 L9 12 L15 6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span class="label-jp">Portal</span>
+</a>
+<div class="container">
+
+<header>
+  <div class="eyebrow">REAL ASSET MINING</div>
+  <h1>ビジュアルシミュレーター</h1>
+  <div class="subtitle">ポジション設計・報酬シミュレーション・自己アフィリ連動</div>
+</header>
+
+<div class="layout">
+  <div class="pyramid-box">
+    <div class="section-label">▸ あなたのネットワーク</div>
+    <div class="pyramid" id="pyramid">
+
+      <div class="tier tier-me">
+        <div class="tier-header" id="meHeader">本人 <span class="tier-stats" id="meStats">—</span></div>
+        <div class="tier-row">
+          <div class="person">
+            <div class="person-avatar">👤</div>
+            <div class="person-amount" id="meLabel">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tier tier-direct">
+        <div class="tier-header">Lv.1 · 直紹介 <span class="tier-stats" id="directStats">—</span></div>
+        <div class="tier-row" id="directRow"></div>
+      </div>
+
+      <div class="tier tier-second">
+        <div class="tier-header">Lv.2 · 二次紹介 <span class="tier-stats" id="secondStats">—</span></div>
+        <div class="tier-row" id="secondRow"></div>
+      </div>
+
+      <div id="particles"></div>
+    </div>
+
+    <div class="result-center">
+      <div class="result-label">あなたの月間収益 ／ MONTHLY INCOME</div>
+      <div class="result-total" id="totalUSDT">$0</div>
+      <div class="result-jpy" id="totalJPY">約 0 円</div>
+    </div>
+
+    <div class="self-summary" id="selfSummary">
+      <div class="self-summary-title">🟡 自己アフィリエイト集計</div>
+      <div class="self-summary-grid">
+        <div class="self-summary-cell">
+          <div class="self-summary-cell-label">自分の総ポジション</div>
+          <div class="self-summary-cell-value" id="sPos">1</div>
+          <div class="self-summary-cell-sub">個</div>
+        </div>
+        <div class="self-summary-cell">
+          <div class="self-summary-cell-label">自己投資合計</div>
+          <div class="self-summary-cell-value" id="sInvest">$0</div>
+          <div class="self-summary-cell-jpy" id="sInvestJPY">約 0 円</div>
+          <div class="self-summary-cell-sub">初期コスト</div>
+        </div>
+        <div class="self-summary-cell">
+          <div class="self-summary-cell-label">実質月利回り</div>
+          <div class="self-summary-cell-value" id="sYield">0%</div>
+          <div class="self-summary-cell-sub">月収益÷自己投資</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="controls">
+
+    <div class="control-group">
+      <div class="control-group-title">
+        <span class="dot dot-me"></span>
+        本人
+      </div>
+      <div class="sub-label">パスポート</div>
+      <div class="chip-row" id="passportChips"></div>
+
+      <div class="sub-label">タイトル</div>
+      <div class="chip-row" id="titleChips"></div>
+
+      <div class="sub-label">為替レート（USD/JPY）</div>
+      <div class="fx-box">
+        <span class="fx-box-label">1 USD =</span>
+        <div class="fx-input-wrap">
+          <input type="number" id="fxInput" value="159" min="80" max="300" step="0.1">
+          <span class="unit">円</span>
+        </div>
+      </div>
+      <div class="fx-hint">2026年4月時点の実勢レート：約 159円</div>
+    </div>
+
+    <div class="control-group">
+      <div class="control-group-title">
+        <span class="dot dot-direct"></span>
+        Lv.1 · 直紹介 · パスポート別人数
+      </div>
+      <div class="counter-list" id="directCounters"></div>
+      <div class="tier-summary" id="directSummary"></div>
+    </div>
+
+    <div class="control-group">
+      <div class="control-group-title">
+        <span class="dot dot-second"></span>
+        Lv.2 · 二次紹介 · パスポート別人数
+      </div>
+      <div class="counter-list" id="secondCounters"></div>
+      <div class="tier-summary second" id="secondSummary"></div>
+    </div>
+
+    <div class="control-group">
+      <div class="control-group-title">
+        <span class="dot dot-gold"></span>
+        自己アフィリエイト
+      </div>
+
+      <div class="toggle-wrap" id="selfAffToggle">
+        <span class="toggle-label">自分で複数ポジションを持つ</span>
+        <div class="toggle" id="selfAffSwitch"></div>
+      </div>
+
+      <div class="self-aff-content" id="selfAffContent">
+        <div class="self-aff-note">
+          💡 各パスポートの合計人数のうち、何個が自分のアカウントかを指定。ピラミッド上では金色＋「自」マークで表示されます。
+        </div>
+
+        <div class="self-aff-level-label">Lv.1 のうち自分のポジション</div>
+        <div class="counter-list" id="selfAffDirectCounters"></div>
+
+        <div class="self-aff-level-label">Lv.2 のうち自分のポジション</div>
+        <div class="counter-list" id="selfAffSecondCounters"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="breakdown">
+  <div class="section-label">▸ 収益の内訳</div>
+
+  <div class="breakdown-row">
+    <div class="breakdown-icon" style="background:var(--me)">⛏</div>
+    <div>
+      <div class="breakdown-label">本人のマイニング収益</div>
+      <div class="breakdown-label-sub" id="miningSub">—</div>
+    </div>
+    <div class="breakdown-value" id="miningVal">$0</div>
+  </div>
+
+  <div class="breakdown-row" id="selfAffMiningRow" style="display:none;">
+    <div class="breakdown-icon" style="background:var(--gold)">自</div>
+    <div>
+      <div class="breakdown-label">自己アフィリ分のマイニング</div>
+      <div class="breakdown-label-sub" id="selfAffMiningSub">—</div>
+    </div>
+    <div class="breakdown-value" id="selfAffMiningVal">$0</div>
+  </div>
+
+  <div class="breakdown-row">
+    <div class="breakdown-icon" style="background:var(--direct)">20%</div>
+    <div>
+      <div class="breakdown-label">直紹介ボーナス</div>
+      <div class="breakdown-label-sub" id="directSub">—</div>
+    </div>
+    <div class="breakdown-value" id="directVal">$0</div>
+  </div>
+
+  <div class="breakdown-row">
+    <div class="breakdown-icon" style="background:var(--second)">10%</div>
+    <div>
+      <div class="breakdown-label">二次紹介ボーナス</div>
+      <div class="breakdown-label-sub" id="secondSub">—</div>
+    </div>
+    <div class="breakdown-value" id="secondVal">$0</div>
+  </div>
+
+  <div class="breakdown-row">
+    <div class="breakdown-icon" style="background:var(--gold)">★</div>
+    <div>
+      <div class="breakdown-label">チームボーナス</div>
+      <div class="breakdown-label-sub" id="teamSub">—</div>
+    </div>
+    <div class="breakdown-value" id="teamVal">$0</div>
+  </div>
+
+  <div class="breakdown-row total">
+    <div class="breakdown-icon" style="background:var(--ink)">=</div>
+    <div>
+      <div class="breakdown-label">月間合計</div>
+      <div class="breakdown-label-sub">年間: <span id="annualHint">$0</span></div>
+    </div>
+    <div class="breakdown-value" id="totalBreakdown">$0</div>
+  </div>
+</div>
+
+<footer>
+  龍海渡（Ronkaito）財団 · Real Asset Mining ビジュアルシミュレーター · RKT-SIM-2026-010
+</footer>
+
+</div>
+
+<script>
+  const PASSPORTS = [
+    { id: 's',  name: 'シャベル',     amt: 300,   rate: 3.0 },
+    { id: 'p',  name: 'ツルハシ',     amt: 1000,  rate: 4.5 },
+    { id: 'd',  name: 'ドリル',       amt: 3000,  rate: 6.0 },
+    { id: 'e',  name: 'ショベル',     amt: 10000, rate: 7.5 },
+    { id: 'b',  name: 'ブルドーザー', amt: 40000, rate: 9.0 }
+  ];
+
+  const TITLES = [
+    { id: 'n',  name: 'ノーマル', rate: 0 },
+    { id: 'l1', name: 'L1',     rate: 1.0 },
+    { id: 'l2', name: 'L2',     rate: 2.0 },
+    { id: 'l3', name: 'L3',     rate: 3.0 },
+    { id: 'l4', name: 'L4',     rate: 4.5 },
+    { id: 'l5', name: 'L5',     rate: 6.0 }
+  ];
+
+  const pspOf = id => PASSPORTS.find(x => x.id === id);
+
+  const PASSPORT_SVGS = {
+    s: `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <rect x="11" y="4" width="10" height="2.5" rx="1.25"/>
+      <rect x="14.8" y="6.5" width="2.4" height="14"/>
+      <path d="M10 20.5 L22 20.5 L19 28 Q16 29.2 13 28 Z"/>
+    </svg>`,
+    p: `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 11 Q16 6 28 11 L26.5 13.5 Q22 10.8 16 11.5 Q10 10.8 5.5 13.5 Z"/>
+      <rect x="14.8" y="11" width="2.4" height="17" rx="0.5"/>
+    </svg>`,
+    d: `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="3.5" width="12" height="2.5" rx="1.25"/>
+      <rect x="9.5" y="6" width="13" height="10" rx="1.5"/>
+      <rect x="14.8" y="16" width="2.4" height="6.5"/>
+      <path d="M13 22.5 L19 22.5 L16 29 Z"/>
+    </svg>`,
+    e: `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M23 4 L29.5 6.5 L27.5 9.5 L22 7.5 Z"/>
+      <path d="M13 13 L23 6 L25 8 L15 15 Z"/>
+      <rect x="3" y="13" width="11" height="7.5" rx="1"/>
+      <rect x="2" y="21.5" width="18" height="4" rx="2"/>
+      <circle cx="5.5" cy="23.5" r="0.8" fill="#1e1e1e"/>
+      <circle cx="10" cy="23.5" r="0.8" fill="#1e1e1e"/>
+      <circle cx="14.5" cy="23.5" r="0.8" fill="#1e1e1e"/>
+    </svg>`,
+    b: `<svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <rect x="7" y="6" width="9" height="6.5" rx="1"/>
+      <rect x="4" y="12.5" width="17" height="7.5" rx="1"/>
+      <path d="M21 10.5 L27 8.5 L29 21.5 L21 19.5 Z"/>
+      <rect x="2" y="21.5" width="22" height="4" rx="2"/>
+      <circle cx="5.5" cy="23.5" r="0.8" fill="#1e1e1e"/>
+      <circle cx="11" cy="23.5" r="0.8" fill="#1e1e1e"/>
+      <circle cx="16.5" cy="23.5" r="0.8" fill="#1e1e1e"/>
+      <circle cx="22" cy="23.5" r="0.8" fill="#1e1e1e"/>
+    </svg>`
+  };
+
+  function pspIcon(id, variant = 'sm') {
+    const cls = variant === 'lg' ? 'psp-card' : 'psp-card-' + variant;
+    return `<div class="${cls}">${PASSPORT_SVGS[id]}</div>`;
+  }
+
+  const emptyCounts = () => ({ s: 0, p: 0, d: 0, e: 0, b: 0 });
+
+  let state = {
+    passport: 's',
+    title: 'n',
+    directCounts: { s: 0, p: 2, d: 0, e: 0, b: 0 },
+    secondCounts: { s: 0, p: 0, d: 0, e: 0, b: 0 },
+    selfAffOn: true,
+    selfAffDirectCounts: { s: 0, p: 2, d: 0, e: 0, b: 0 },
+    selfAffSecondCounts: emptyCounts(),
+    fx: 159
+  };
+
+  const sumCounts = obj => Object.values(obj).reduce((a, b) => a + b, 0);
+  const tierVolume = counts => PASSPORTS.reduce((sum, p) => sum + counts[p.id] * p.amt, 0);
+  const tierRevenue = counts => PASSPORTS.reduce((sum, p) => sum + counts[p.id] * p.amt * (p.rate / 100), 0);
+
+  function renderPassportChips() {
+    const el = document.getElementById('passportChips');
+    el.innerHTML = PASSPORTS.map(p => `
+      <div class="chip chip-me ${state.passport === p.id ? 'active' : ''}" data-id="${p.id}">
+        ${pspIcon(p.id, 'lg')}
+        <div>${p.name}</div>
+        <div class="chip-amount">$${p.amt.toLocaleString()}</div>
+        <div class="chip-rate">${p.rate}%</div>
+      </div>
+    `).join('');
+    el.querySelectorAll('.chip').forEach(c => {
+      c.onclick = () => { state.passport = c.dataset.id; renderPassportChips(); compute(); };
+    });
+  }
+
+  function renderTitleChips() {
+    const el = document.getElementById('titleChips');
+    el.innerHTML = TITLES.map(t => `
+      <div class="chip chip-title ${state.title === t.id ? 'active' : ''}" data-id="${t.id}">
+        <div style="font-weight:900">${t.name}</div>
+        <div class="chip-amount">${t.rate}%</div>
+      </div>
+    `).join('');
+    el.querySelectorAll('.chip').forEach(c => {
+      c.onclick = () => { state.title = c.dataset.id; renderTitleChips(); compute(); };
+    });
+  }
+
+  function renderCounters(containerId, counts, tierClass, maxPerPsp, maxBy, selfCounts) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    PASSPORTS.forEach(p => {
+      const value = counts[p.id];
+      const max = maxBy ? maxBy(p.id) : maxPerPsp;
+      const canInc = value < max;
+      const canDec = value > 0;
+      const selfCount = (state.selfAffOn && selfCounts) ? (selfCounts[p.id] || 0) : 0;
+      const hasSelf = selfCount > 0;
+
+      const row = document.createElement('div');
+      let rowClass = `counter-row ${tierClass}`;
+      if (value > 0) rowClass += ' has-count';
+      if (hasSelf) rowClass += ' has-self';
+      row.className = rowClass;
+
+      const selfBadge = hasSelf
+        ? `<div class="self-badge"><span class="self-badge-icon">自</span>うち ${selfCount} 個</div>`
+        : '';
+
+      row.innerHTML = `
+        <div class="counter-icon">${pspIcon(p.id, 'sm')}</div>
+        <div class="counter-info">
+          <div class="counter-name">${p.name}</div>
+          <div class="counter-meta">$${p.amt.toLocaleString()} · 月利${p.rate}%</div>
+          ${selfBadge}
+        </div>
+        <div class="counter-controls">
+          <button class="counter-btn" data-act="dec" ${canDec ? '' : 'disabled'}>−</button>
+          <div class="counter-value">${value}</div>
+          <button class="counter-btn" data-act="inc" ${canInc ? '' : 'disabled'}>+</button>
+        </div>
+      `;
+      row.querySelector('[data-act="inc"]').onclick = () => {
+        if (counts[p.id] < max) { counts[p.id]++; compute(); }
+      };
+      row.querySelector('[data-act="dec"]').onclick = () => {
+        if (counts[p.id] > 0) {
+          counts[p.id]--;
+          if (containerId === 'directCounters' && state.selfAffDirectCounts[p.id] > counts[p.id]) {
+            state.selfAffDirectCounts[p.id] = counts[p.id];
+          }
+          if (containerId === 'secondCounters' && state.selfAffSecondCounts[p.id] > counts[p.id]) {
+            state.selfAffSecondCounts[p.id] = counts[p.id];
+          }
+          compute();
+        }
+      };
+      container.appendChild(row);
+    });
+  }
+
+  function renderAllCounters() {
+    renderCounters('directCounters', state.directCounts, 'direct', 10, null, state.selfAffDirectCounts);
+    renderCounters('secondCounters', state.secondCounts, 'second', 20, null, state.selfAffSecondCounts);
+    renderCounters('selfAffDirectCounters', state.selfAffDirectCounts, 'self', 0,
+      (pid) => state.directCounts[pid]);
+    renderCounters('selfAffSecondCounters', state.selfAffSecondCounts, 'self', 0,
+      (pid) => state.secondCounts[pid]);
+  }
+
+  function renderPyramid() {
+    const p = pspOf(state.passport);
+    document.getElementById('meStats').innerHTML = `${pspIcon(p.id, 'xs')} ${p.name} · $${p.amt.toLocaleString()} · ${p.rate}%`;
+    document.getElementById('meLabel').textContent = `本人 · $${p.amt.toLocaleString()}`;
+
+    renderTierRow('directRow', state.directCounts, state.selfAffDirectCounts, 'psp-', true);
+    renderTierRow('secondRow', state.secondCounts, state.selfAffSecondCounts, 'psp-', false);
+  }
+
+  function renderTierRow(containerId, counts, selfCounts, prefix, showAmount) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    const order = ['b', 'e', 'd', 'p', 's'];
+    let totalShown = 0;
+    const MAX_DISPLAY = 40;
+
+    order.forEach(pid => {
+      const psp = pspOf(pid);
+      const count = counts[pid] || 0;
+      const selfCount = state.selfAffOn ? (selfCounts[pid] || 0) : 0;
+      if (count === 0) return;
+
+      const group = document.createElement('div');
+      group.style.display = 'flex';
+      group.style.flexDirection = 'column';
+      group.style.alignItems = 'center';
+      group.style.gap = '4px';
+
+      const row = document.createElement('div');
+      row.style.display = 'flex';
+      row.style.gap = '4px';
+      row.style.alignItems = 'flex-end';
+
+      for (let i = 0; i < count && totalShown < MAX_DISPLAY; i++) {
+        const isSelf = i < selfCount;
+        const person = document.createElement('div');
+        person.className = 'person ' + prefix + pid + (isSelf ? ' person-self' : '');
+        person.style.animationDelay = (totalShown * 0.02) + 's';
+        const amountStr = showAmount
+          ? `<div class="person-amount">$${psp.amt >= 1000 ? (psp.amt/1000)+'k' : psp.amt}</div>`
+          : '';
+        person.innerHTML = `<div class="person-avatar">👤</div>${amountStr}`;
+        row.appendChild(person);
+        totalShown++;
+      }
+
+      group.appendChild(row);
+
+      const label = document.createElement('div');
+      label.className = 'psp-group-label';
+      label.innerHTML = `${pspIcon(psp.id, 'xs')} ×${count}`;
+      group.appendChild(label);
+
+      container.appendChild(group);
+    });
+
+    const allCount = sumCounts(counts);
+    if (allCount > MAX_DISPLAY) {
+      const more = document.createElement('div');
+      more.className = 'person';
+      more.innerHTML = `<div class="person-avatar" style="background:#bbb;width:32px;height:32px;font-size:11px;">+${allCount-MAX_DISPLAY}</div>`;
+      container.appendChild(more);
+    }
+  }
+
+  function spawnParticles() {
+    const c = document.getElementById('particles');
+    c.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+      const pt = document.createElement('div');
+      pt.className = 'money-particle';
+      pt.textContent = '💰';
+      pt.style.left = (40 + Math.random() * 20) + '%';
+      pt.style.bottom = '0px';
+      pt.style.animationDelay = (i * 0.8) + 's';
+      c.appendChild(pt);
+    }
+  }
+
+  function compute() {
+    const p = pspOf(state.passport);
+    const t = TITLES.find(x => x.id === state.title);
+    const tIdx = TITLES.findIndex(x => x.id === state.title);
+    const lowerRate = tIdx > 0 ? TITLES[tIdx - 1].rate : 0;
+
+    const mining = p.amt * (p.rate / 100);
+
+    const directTotal = tierVolume(state.directCounts);
+    const directRev = tierRevenue(state.directCounts);
+    const secondTotal = tierVolume(state.secondCounts);
+    const secondRev = tierRevenue(state.secondCounts);
+    const directCountTotal = sumCounts(state.directCounts);
+    const secondCountTotal = sumCounts(state.secondCounts);
+
+    const selfAffDirectMining = state.selfAffOn ? tierRevenue(state.selfAffDirectCounts) : 0;
+    const selfAffSecondMining = state.selfAffOn ? tierRevenue(state.selfAffSecondCounts) : 0;
+    const selfAffMining = selfAffDirectMining + selfAffSecondMining;
+    const selfAffInvest = state.selfAffOn
+      ? tierVolume(state.selfAffDirectCounts) + tierVolume(state.selfAffSecondCounts)
+      : 0;
+    const selfAffDirectCount = state.selfAffOn ? sumCounts(state.selfAffDirectCounts) : 0;
+    const selfAffSecondCount = state.selfAffOn ? sumCounts(state.selfAffSecondCounts) : 0;
+
+    const directBonus = directRev * 0.20;
+    const secondBonus = secondRev * 0.10;
+
+    const teamVolume = directTotal + secondTotal;
+    const teamPct = (t.rate - lowerRate) / 100;
+    const teamBonus = teamVolume * teamPct;
+
+    const total = mining + selfAffMining + directBonus + secondBonus + teamBonus;
+    const annual = total * 12;
+
+    const totalSelfInvest = p.amt + selfAffInvest;
+    const selfYield = totalSelfInvest > 0 ? (total / totalSelfInvest * 100) : 0;
+    const totalSelfPos = 1 + selfAffDirectCount + selfAffSecondCount;
+
+    const fmt = n => '$' + Math.round(n).toLocaleString();
+    const jpy = n => '約 ' + Math.round(n * state.fx).toLocaleString() + ' 円';
+    const fmtBoth = n => `${fmt(n)}<span class="breakdown-value-jpy">${jpy(n)}</span>`;
+
+    document.getElementById('totalUSDT').textContent = fmt(total);
+    document.getElementById('totalJPY').textContent = jpy(total);
+
+    document.getElementById('directStats').textContent =
+      directCountTotal > 0 ? `${directCountTotal}人 · $${directTotal.toLocaleString()}` : '0人';
+    document.getElementById('secondStats').textContent =
+      secondCountTotal > 0 ? `${secondCountTotal}人 · $${secondTotal.toLocaleString()}` : '0人';
+
+    document.getElementById('directSummary').innerHTML = `
+      <div class="tier-summary-item">
+        <div class="tier-summary-label">合計人数</div>
+        <div class="tier-summary-value">${directCountTotal}人</div>
+      </div>
+      <div class="tier-summary-item">
+        <div class="tier-summary-label">合計投資額</div>
+        <div class="tier-summary-value">$${directTotal.toLocaleString()}</div>
+      </div>
+      <div class="tier-summary-item">
+        <div class="tier-summary-label">月間マイニング収益</div>
+        <div class="tier-summary-value">$${Math.round(directRev).toLocaleString()}</div>
+      </div>
+    `;
+    document.getElementById('secondSummary').innerHTML = `
+      <div class="tier-summary-item">
+        <div class="tier-summary-label">合計人数</div>
+        <div class="tier-summary-value">${secondCountTotal}人</div>
+      </div>
+      <div class="tier-summary-item">
+        <div class="tier-summary-label">合計投資額</div>
+        <div class="tier-summary-value">$${secondTotal.toLocaleString()}</div>
+      </div>
+      <div class="tier-summary-item">
+        <div class="tier-summary-label">月間マイニング収益</div>
+        <div class="tier-summary-value">$${Math.round(secondRev).toLocaleString()}</div>
+      </div>
+    `;
+
+    document.getElementById('miningVal').innerHTML = fmtBoth(mining);
+    document.getElementById('miningSub').textContent = `$${p.amt.toLocaleString()} × 月利${p.rate}%（${p.name}）`;
+
+    const selfAffRow = document.getElementById('selfAffMiningRow');
+    if (state.selfAffOn && (selfAffDirectCount > 0 || selfAffSecondCount > 0)) {
+      selfAffRow.style.display = 'grid';
+      document.getElementById('selfAffMiningVal').innerHTML = fmtBoth(selfAffMining);
+      document.getElementById('selfAffMiningSub').textContent =
+        `Lv.1 ${selfAffDirectCount}個 + Lv.2 ${selfAffSecondCount}個 · 自己投資 $${selfAffInvest.toLocaleString()}（${jpy(selfAffInvest)}）`;
+    } else {
+      selfAffRow.style.display = 'none';
+    }
+
+    document.getElementById('directVal').innerHTML = fmtBoth(directBonus);
+    document.getElementById('directSub').textContent =
+      `Lv.1 ${directCountTotal}人の収益 $${Math.round(directRev).toLocaleString()} × 20%`;
+
+    document.getElementById('secondVal').innerHTML = fmtBoth(secondBonus);
+    document.getElementById('secondSub').textContent =
+      `Lv.2 ${secondCountTotal}人の収益 $${Math.round(secondRev).toLocaleString()} × 10%`;
+
+    document.getElementById('teamVal').innerHTML = fmtBoth(teamBonus);
+    document.getElementById('teamSub').textContent =
+      `チーム $${teamVolume.toLocaleString()} × ${((t.rate-lowerRate).toFixed(1))}%差益（${t.name}）`;
+
+    document.getElementById('totalBreakdown').innerHTML = fmtBoth(total);
+    document.getElementById('annualHint').innerHTML = `${fmt(annual)} / ${jpy(annual)}`;
+
+    const summary = document.getElementById('selfSummary');
+    if (state.selfAffOn) {
+      summary.classList.add('active');
+      document.getElementById('sPos').textContent = totalSelfPos;
+      document.getElementById('sInvest').textContent = fmt(totalSelfInvest);
+      document.getElementById('sInvestJPY').textContent = jpy(totalSelfInvest);
+      document.getElementById('sYield').textContent = selfYield.toFixed(1) + '%';
+    } else {
+      summary.classList.remove('active');
+    }
+
+    renderAllCounters();
+    renderPyramid();
+    spawnParticles();
+  }
+
+  document.getElementById('selfAffToggle').onclick = () => {
+    state.selfAffOn = !state.selfAffOn;
+    const sw = document.getElementById('selfAffSwitch');
+    const content = document.getElementById('selfAffContent');
+    sw.classList.toggle('on', state.selfAffOn);
+    content.classList.toggle('open', state.selfAffOn);
+    if (!state.selfAffOn) {
+      state.selfAffDirectCounts = emptyCounts();
+      state.selfAffSecondCounts = emptyCounts();
+    }
+    compute();
+  };
+
+  document.getElementById('fxInput').addEventListener('input', e => {
+    const v = parseFloat(e.target.value);
+    if (!isNaN(v) && v > 0) {
+      state.fx = v;
+      compute();
+    }
+  });
+
+  renderPassportChips();
+  renderTitleChips();
+
+  if (state.selfAffOn) {
+    document.getElementById('selfAffSwitch').classList.add('on');
+    document.getElementById('selfAffContent').classList.add('open');
+  }
+
+  compute();
+
+  setInterval(spawnParticles, 2500);
+</script>
+
+</body>
+</html>
