@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月収 10万・30万・50万円 のつくりかた｜Real Asset Mining</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ivory: #faf5ec;
+    --cream: #f3e9d8;
+    --cream-deep: #ead9bf;
+    --rose: #c9a47a;
+    --rose-deep: #a67d52;
+    --rose-dark: #7a5a3a;
+    --ink: #3d2f24;
+    --ink-soft: #6e5a48;
+    --ink-dim: #a89584;
+    --pink: #e8b5a8;
+    --pink-soft: #f5d8ce;
+    --sage: #8ba886;
+    --gold: #c9a227;
+    --line: #e4d5bd;
+    --shadow-soft: 0 8px 40px rgba(122, 90, 58, 0.08);
+    --shadow-card: 0 12px 48px rgba(122, 90, 58, 0.1);
+  }
+
+  body {
+    background: var(--ivory);
+    color: var(--ink);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 400;
+    line-height: 1.75;
+    letter-spacing: 0.02em;
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(232, 181, 168, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(201, 164, 122, 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.25;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.6 0 0 0 0 0.5 0 0 0 0 0.4 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .page { position: relative; z-index: 2; }
+
+  /* ============ HERO ============ */
+  .hero {
+    padding: 100px 24px 80px;
+    text-align: center;
+    position: relative;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--rose-deep);
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+    display: inline-block;
+  }
+
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 1px;
+    background: var(--rose);
+    vertical-align: middle;
+    margin: 0 16px;
+  }
+
+  .hero h1 {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 600;
+    font-size: clamp(32px, 6vw, 62px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+
+  .hero h1 .accent {
+    color: var(--rose-deep);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', 'Shippori Mincho', serif;
+    font-weight: 500;
+  }
+
+  .hero h1 .number {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-style: italic;
+    color: var(--rose-deep);
+    font-size: 1.1em;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    color: var(--ink-soft);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 2;
+  }
+
+  .hero-tagline {
+    display: inline-block;
+    margin-top: 28px;
+    padding: 8px 20px;
+    background: linear-gradient(135deg, var(--cream), var(--pink-soft));
+    border-radius: 20px;
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px;
+    color: var(--rose-dark);
+    letter-spacing: 0.1em;
+    border: 1px solid var(--line);
+  }
+
+  .hero-ornament {
+    margin: 36px auto 0;
+    width: 64px;
+    height: 64px;
+    opacity: 0.6;
+  }
+
+  /* ============ PREMISE ============ */
+  .premise {
+    max-width: 960px;
+    margin: 0 auto 80px;
+    padding: 0 24px;
+  }
+
+  .premise-card {
+    background: linear-gradient(135deg, #fff 0%, var(--cream) 100%);
+    border-radius: 24px;
+    padding: 48px 56px;
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .premise-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(232, 181, 168, 0.3), transparent 70%);
+    border-radius: 50%;
+    transform: translate(-30%, -30%);
+  }
+
+  .premise-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    color: var(--rose-deep);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .premise-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 32px;
+    color: var(--ink);
+    position: relative;
+    z-index: 1;
+  }
+
+  .premise-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 680px) {
+    .premise-grid { grid-template-columns: 1fr; gap: 24px; }
+    .premise-card { padding: 32px 24px; }
+  }
+
+  .premise-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .premise-icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(166, 125, 82, 0.3);
+  }
+
+  .premise-icon svg {
+    width: 22px;
+    height: 22px;
+    color: #f5e6c8;
+  }
+
+  .premise-item h4 {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+
+  .premise-item p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.8;
+  }
+
+  .premise-item p strong {
+    color: var(--rose-deep);
+    font-weight: 700;
+  }
+
+  /* ============ MODEL SECTIONS ============ */
+  .models {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 80px;
+    padding-top: 40px;
+  }
+
+  .section-header h2 {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 600;
+    font-size: clamp(28px, 4vw, 40px);
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  .section-header .accent {
+    color: var(--rose-deep);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+
+  .section-header p {
+    font-size: 14px;
+    color: var(--ink-soft);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .model {
+    background: #fff;
+    border-radius: 32px;
+    padding: 56px 48px;
+    margin-bottom: 48px;
+    box-shadow: var(--shadow-card);
+    position: relative;
+    overflow: hidden;
+  }
+
+  @media (max-width: 680px) {
+    .model { padding: 40px 24px; border-radius: 24px; }
+  }
+
+  .model::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(232, 181, 168, 0.15), transparent 70%);
+    border-radius: 50%;
+    transform: translate(40%, -40%);
+  }
+
+  .model-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  @media (max-width: 680px) {
+    .model-header {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 16px;
+    }
+  }
+
+  .model-badge {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 72px;
+    font-weight: 600;
+    line-height: 0.9;
+    color: var(--rose-deep);
+    opacity: 0.85;
+  }
+
+  .model-title-block h3 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .model-title-block .jp-goal {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .model-hero-number {
+    text-align: right;
+  }
+
+  @media (max-width: 680px) {
+    .model-hero-number { text-align: center; }
+  }
+
+  .model-hero-number .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 48px;
+    color: var(--rose-deep);
+    line-height: 1;
+    display: block;
+  }
+
+  .model-hero-number .unit {
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.15em;
+    margin-top: 4px;
+  }
+
+  /* ============ PYRAMID VISUAL (2段) ============ */
+  .pyramid-visual {
+    background: linear-gradient(180deg, var(--ivory) 0%, #fff 100%);
+    border-radius: 20px;
+    padding: 48px 32px;
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  @media (max-width: 680px) {
+    .pyramid-visual { padding: 36px 16px; }
+  }
+
+  .pyramid-label {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    color: var(--rose-deep);
+    margin-bottom: 40px;
+    text-transform: uppercase;
+  }
+
+  .tier {
+    margin-bottom: 48px;
+  }
+
+  .tier:last-child { margin-bottom: 0; }
+
+  .tier-tag {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
+  .tier-tag .tag {
+    display: inline-block;
+    padding: 4px 14px;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--rose-deep);
+    letter-spacing: 0.15em;
+    font-weight: 600;
+  }
+
+  .tier-tag .tag .ja {
+    font-family: 'Shippori Mincho', serif;
+    font-style: normal;
+    color: var(--ink-soft);
+    font-size: 11px;
+    margin-left: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .tier-row {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  /* 接続線 */
+  .connector-svg {
+    display: block;
+    margin: -8px auto;
+    width: 2px;
+    height: 40px;
+  }
+
+  .connector-svg line {
+    stroke: var(--rose);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 4;
+    opacity: 0.5;
+  }
+
+  /* Position card */
+  .pos {
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    padding: 18px 16px;
+    min-width: 120px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(122, 90, 58, 0.06);
+    position: relative;
+    transition: transform 0.3s ease;
+    animation: fadeUp 0.6s ease backwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .pos:hover { transform: translateY(-4px); }
+
+  .pos.me {
+    background: linear-gradient(135deg, #fff 0%, var(--pink-soft) 100%);
+    border-color: var(--pink);
+    border-width: 2px;
+    min-width: 150px;
+  }
+
+  .pos-icon {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 12px;
+    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.1),
+      0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .pos.me .pos-icon {
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+  }
+
+  .pos-icon svg {
+    width: 30px;
+    height: 30px;
+    color: #f2cc55;
+    filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.4));
+  }
+
+  .pos.me .pos-icon svg { color: #fff; }
+
+  .pos-name {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 5px;
+  }
+
+  .pos-amount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--rose-deep);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .pos-rate {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-dim);
+  }
+
+  .pos-multi {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: linear-gradient(135deg, var(--gold), #b88d20);
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(201, 162, 39, 0.4);
+  }
+
+  .pos.me::after {
+    content: '★';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--pink);
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    box-shadow: 0 2px 6px rgba(232, 181, 168, 0.5);
+  }
+
+  /* ============ BREAKDOWN TABLE ============ */
+  .breakdown-table {
+    display: grid;
+    gap: 0;
+    margin-bottom: 32px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+
+  .bt-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px;
+    padding: 16px 20px;
+    align-items: center;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+  }
+
+  .bt-row:last-child { border-bottom: none; }
+
+  .bt-row.total {
+    background: linear-gradient(135deg, var(--cream) 0%, var(--cream-deep) 100%);
+    font-weight: 700;
+  }
+
+  .bt-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--rose-deep);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 13px;
+  }
+
+  .bt-row.total .bt-icon {
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    color: #fff;
+    font-size: 15px;
+  }
+
+  .bt-label {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  .bt-label-sub {
+    font-size: 11px;
+    color: var(--ink-dim);
+    margin-top: 2px;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  .bt-value {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--rose-deep);
+  }
+
+  .bt-row.total .bt-value {
+    font-size: 18px;
+    color: var(--rose-dark);
+  }
+
+  .bt-value-jpy {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-dim);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* ============ SUMMARY CARDS ============ */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 680px) {
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+    .summary-grid > :nth-child(3) { grid-column: span 2; }
+  }
+
+  .sum-card {
+    background: linear-gradient(135deg, var(--ivory), var(--cream));
+    border-radius: 16px;
+    padding: 20px 16px;
+    text-align: center;
+    position: relative;
+  }
+
+  .sum-card-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--rose-deep);
+    margin-bottom: 10px;
+  }
+
+  .sum-card-value {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .sum-card-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-dim);
+    margin-top: 4px;
+  }
+
+  /* ============ LIFESTYLE ============ */
+  .lifestyle {
+    background: linear-gradient(135deg, var(--pink-soft) 0%, #fdf2ec 100%);
+    border-radius: 20px;
+    padding: 32px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  @media (max-width: 680px) {
+    .lifestyle { padding: 24px 20px; }
+  }
+
+  .lifestyle-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--rose-deep);
+    margin-bottom: 8px;
+  }
+
+  .lifestyle-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+
+  .lifestyle-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+  }
+
+  @media (max-width: 680px) {
+    .lifestyle-list { grid-template-columns: 1fr; }
+  }
+
+  .lifestyle-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.7;
+  }
+
+  .lifestyle-item::before {
+    content: '✿';
+    color: var(--pink);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ============ COMPARISON TABLE ============ */
+  .comparison {
+    max-width: 1080px;
+    margin: 80px auto 60px;
+    padding: 0 24px;
+  }
+
+  .comp-table {
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+
+  .comp-header {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    background: linear-gradient(135deg, var(--ink) 0%, var(--rose-dark) 100%);
+    color: #fff;
+  }
+
+  .comp-header > div {
+    padding: 20px 16px;
+    text-align: center;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 500;
+    font-size: 14px;
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .comp-header > div:first-child {
+    text-align: left;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+  }
+
+  .comp-header > div:last-child { border-right: none; }
+
+  .comp-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .comp-row:last-child { border-bottom: none; }
+
+  .comp-row > div {
+    padding: 14px 16px;
+    font-size: 13px;
+    text-align: center;
+    border-right: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .comp-row > div:first-child {
+    text-align: left;
+    justify-content: flex-start;
+    color: var(--ink-soft);
+    font-family: 'Shippori Mincho', serif;
+  }
+
+  .comp-row > div:last-child { border-right: none; }
+
+  .comp-row .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--rose-deep);
+  }
+
+  .comp-row.highlight {
+    background: linear-gradient(135deg, var(--cream), var(--pink-soft));
+  }
+
+  .comp-row.highlight > div:first-child {
+    color: var(--rose-dark);
+    font-weight: 700;
+  }
+
+  .comp-row.highlight .num {
+    color: var(--rose-dark);
+    font-size: 15px;
+  }
+
+  @media (max-width: 680px) {
+    .comp-header, .comp-row {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    .comp-header > div:first-child, .comp-row > div:first-child {
+      display: none;
+    }
+    .comp-row > div {
+      padding: 10px 8px;
+      font-size: 11px;
+    }
+  }
+
+  /* ============ NOTES ============ */
+  .notes {
+    max-width: 960px;
+    margin: 0 auto 60px;
+    padding: 0 24px;
+  }
+
+  .notes-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--rose);
+    border-radius: 12px;
+    padding: 28px 32px;
+  }
+
+  @media (max-width: 680px) {
+    .notes-card { padding: 20px; }
+  }
+
+  .notes-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--rose-deep);
+    margin-bottom: 8px;
+  }
+
+  .notes-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--ink);
+  }
+
+  .notes-list {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.8;
+  }
+
+  .notes-list li {
+    margin-bottom: 8px;
+    padding-left: 18px;
+    position: relative;
+    list-style: none;
+  }
+
+  .notes-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--rose);
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--ink-dim);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+  }
+
+  footer .divider {
+    width: 40px;
+    height: 1px;
+    background: var(--rose);
+    margin: 0 auto 16px;
+  }
+
+  @media print {
+    body { background: #fff; }
+    body::before { display: none; }
+    .model, .comp-table, .notes-card { box-shadow: none; border: 1px solid var(--line); page-break-inside: avoid; }
+    .model { page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero-eyebrow">Real Asset Mining · For Women's Life Design</div>
+    <h1>
+      <span class="accent">月収</span>
+      <span class="number">10</span> ・
+      <span class="number">30</span> ・
+      <span class="number">50</span>
+      <span class="accent">万円</span><br>
+      のつくりかた
+    </h1>
+    <p class="hero-sub">
+      本人は<strong style="color:var(--rose-deep)">シャベル（300ドル）</strong>からスタート。<br>
+      すべての Lv.1 ポジションを自分のアカウントで組む、<br>
+      シンプル 2 段構成のモデル。
+    </p>
+    <div class="hero-tagline">◆ シンプルな 2 段構成 · Lv.1 完結モデル ◆</div>
+    <svg class="hero-ornament" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M32 8 L40 28 L56 28 L44 40 L48 56 L32 48 L16 56 L20 40 L8 28 L24 28 Z"
+            stroke="#c9a47a" stroke-width="0.8" fill="none"/>
+      <circle cx="32" cy="32" r="3" fill="#c9a47a"/>
+    </svg>
+  </section>
+
+  <!-- ============ PREMISE ============ -->
+  <section class="premise">
+    <div class="premise-card">
+      <div class="premise-label">◆ BASIC CONDITION</div>
+      <h3 class="premise-title">このシミュレーションの前提</h3>
+
+      <div class="premise-grid">
+        <div class="premise-item">
+          <div class="premise-icon">
+            <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <rect x="11" y="4" width="10" height="2.5" rx="1.25"/>
+              <rect x="14.8" y="6.5" width="2.4" height="14"/>
+              <path d="M10 20.5 L22 20.5 L19 28 Q16 29.2 13 28 Z"/>
+            </svg>
+          </div>
+          <div>
+            <h4>本人は「シャベル」から</h4>
+            <p>一番小さな<strong>300ドル</strong>のポジション（月利3%）でスタート。無理のない金額から始められます。</p>
+          </div>
+        </div>
+
+        <div class="premise-item">
+          <div class="premise-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="6" r="3" fill="currentColor"/>
+              <circle cx="5" cy="18" r="2.5" fill="currentColor"/>
+              <circle cx="12" cy="18" r="2.5" fill="currentColor"/>
+              <circle cx="19" cy="18" r="2.5" fill="currentColor"/>
+              <line x1="12" y1="9" x2="5" y2="15.5" stroke="currentColor" stroke-width="1.2"/>
+              <line x1="12" y1="9" x2="12" y2="15.5" stroke="currentColor" stroke-width="1.2"/>
+              <line x1="12" y1="9" x2="19" y2="15.5" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+          </div>
+          <div>
+            <h4>Lv.1 のみ · 2 段構成</h4>
+            <p>Lv.1 の複数ポジションを<strong>自分のアカウント</strong>で保有。紹介者を集める必要なく、すべて自己完結。</p>
+          </div>
+        </div>
+
+        <div class="premise-item">
+          <div class="premise-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 6 L12 12 L16 14" stroke-linecap="round"/>
+              <circle cx="12" cy="12" r="9"/>
+            </svg>
+          </div>
+          <div>
+            <h4>為替レート：<strong>1ドル = 159円</strong></h4>
+            <p>2026年4月時点の実勢レートで換算。レートにより円換算額は変動します。</p>
+          </div>
+        </div>
+
+        <div class="premise-item">
+          <div class="premise-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 3 L3 8 V13 C3 17.5 6.5 20.5 12 21 C17.5 20.5 21 17.5 21 13 V8 Z" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <h4>報酬の仕組み</h4>
+            <p>マイニング収益＋<strong>直紹介20%</strong>。Lv.1 のみに絞ることで <strong>効率と分かりやすさ</strong>を両立。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MODELS ============ -->
+  <section class="models">
+
+    <div class="section-header">
+      <h2>3つの <span class="accent">理想のかたち</span></h2>
+      <p>ライフスタイルに合わせて、目指せる月収を3段階で設計。<br>それぞれに必要な投資と、回収までの目安を示します。</p>
+    </div>
+
+    <!-- ====== MODEL A ====== -->
+    <article class="model">
+      <div class="model-header">
+        <div class="model-badge">A</div>
+        <div class="model-title-block">
+          <h3>月収 10万円プラン</h3>
+          <div class="jp-goal">— Starter · the first step</div>
+        </div>
+        <div class="model-hero-number">
+          <span class="num">¥104,463</span>
+          <div class="unit">/ MONTH</div>
+        </div>
+      </div>
+
+      <div class="pyramid-visual">
+        <div class="pyramid-label">◆ あなたのネットワーク構成</div>
+
+        <div class="tier">
+          <div class="tier-tag"><span class="tag">YOU <span class="ja">本人</span></span></div>
+          <div class="tier-row">
+            <div class="pos me" style="animation-delay: 0.05s">
+              <div class="pos-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="11" y="4" width="10" height="2.5" rx="1.25"/>
+                  <rect x="14.8" y="6.5" width="2.4" height="14"/>
+                  <path d="M10 20.5 L22 20.5 L19 28 Q16 29.2 13 28 Z"/>
+                </svg>
+              </div>
+              <div class="pos-name">シャベル</div>
+              <div class="pos-amount">$300</div>
+              <div class="pos-rate">月利 3.0%</div>
+            </div>
+          </div>
+        </div>
+
+        <svg class="connector-svg" viewBox="0 0 2 40" preserveAspectRatio="none">
+          <line x1="1" y1="0" x2="1" y2="40"/>
+        </svg>
+
+        <div class="tier">
+          <div class="tier-tag"><span class="tag">LV.1 <span class="ja">直紹介（自分）</span></span></div>
+          <div class="tier-row">
+            <div class="pos" style="animation-delay: 0.15s">
+              <div class="pos-multi">×3</div>
+              <div class="pos-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="10" y="3.5" width="12" height="2.5" rx="1.25"/>
+                  <rect x="9.5" y="6" width="13" height="10" rx="1.5"/>
+                  <rect x="14.8" y="16" width="2.4" height="6.5"/>
+                  <path d="M13 22.5 L19 22.5 L16 29 Z"/>
+                </svg>
+              </div>
+              <div class="pos-name">ドリル</div>
+              <div class="pos-amount">$3,000 × 3</div>
+              <div class="pos-rate">月利 6.0%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="breakdown-table">
+        <div class="bt-row">
+          <div class="bt-icon">i</div>
+          <div>
+            <div class="bt-label">本人のマイニング収益</div>
+            <div class="bt-label-sub">シャベル $300 × 月利 3.0%</div>
+          </div>
+          <div class="bt-value">$9<span class="bt-value-jpy">約 1,431 円</span></div>
+        </div>
+        <div class="bt-row">
+          <div class="bt-icon">ii</div>
+          <div>
+            <div class="bt-label">Lv.1 マイニング + 直紹介 20%</div>
+            <div class="bt-label-sub">ドリル×3 ＝ マイニング $540 + ボーナス $108</div>
+          </div>
+          <div class="bt-value">$648<span class="bt-value-jpy">約 103,032 円</span></div>
+        </div>
+        <div class="bt-row total">
+          <div class="bt-icon">＝</div>
+          <div>
+            <div class="bt-label">月間合計</div>
+            <div class="bt-label-sub">年間：$7,884 ／ 約 1,253,556 円</div>
+          </div>
+          <div class="bt-value">$657<span class="bt-value-jpy">約 104,463 円</span></div>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="sum-card">
+          <div class="sum-card-label">Initial Investment</div>
+          <div class="sum-card-value">約 148万円</div>
+          <div class="sum-card-sub">$9,300</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-card-label">Recovery Period</div>
+          <div class="sum-card-value">約 14ヶ月</div>
+          <div class="sum-card-sub">単純回収・複利なし</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-card-label">Annual Yield</div>
+          <div class="sum-card-value">約 84.8%</div>
+          <div class="sum-card-sub">年利回り（月利前提）</div>
+        </div>
+      </div>
+
+      <div class="lifestyle">
+        <div class="lifestyle-label">◆ LIFESTYLE</div>
+        <div class="lifestyle-title">月 10 万円あったら、できること</div>
+        <div class="lifestyle-list">
+          <div class="lifestyle-item">ヨガ・ピラティスに通い放題</div>
+          <div class="lifestyle-item">月1回の贅沢な美容・エステ</div>
+          <div class="lifestyle-item">食費・日用品の余裕</div>
+          <div class="lifestyle-item">年2回の国内旅行が可能に</div>
+          <div class="lifestyle-item">習い事や学び直しの自由</div>
+          <div class="lifestyle-item">お気に入りのものを迷わず選ぶ</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ====== MODEL B ====== -->
+    <article class="model">
+      <div class="model-header">
+        <div class="model-badge">B</div>
+        <div class="model-title-block">
+          <h3>月収 30万円プラン</h3>
+          <div class="jp-goal">— Independent · freedom of choice</div>
+        </div>
+        <div class="model-hero-number">
+          <span class="num">¥321,975</span>
+          <div class="unit">/ MONTH</div>
+        </div>
+      </div>
+
+      <div class="pyramid-visual">
+        <div class="pyramid-label">◆ あなたのネットワーク構成</div>
+
+        <div class="tier">
+          <div class="tier-tag"><span class="tag">YOU <span class="ja">本人</span></span></div>
+          <div class="tier-row">
+            <div class="pos me" style="animation-delay: 0.05s">
+              <div class="pos-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="11" y="4" width="10" height="2.5" rx="1.25"/>
+                  <rect x="14.8" y="6.5" width="2.4" height="14"/>
+                  <path d="M10 20.5 L22 20.5 L19 28 Q16 29.2 13 28 Z"/>
+                </svg>
+              </div>
+              <div class="pos-name">シャベル</div>
+              <div class="pos-amount">$300</div>
+              <div class="pos-rate">月利 3.0%</div>
+            </div>
+          </div>
+        </div>
+
+        <svg class="connector-svg" viewBox="0 0 2 40" preserveAspectRatio="none">
+          <line x1="1" y1="0" x2="1" y2="40"/>
+        </svg>
+
+        <div class="tier">
+          <div class="tier-tag"><span class="tag">LV.1 <span class="ja">直紹介（自分）</span></span></div>
+          <div class="tier-row">
+            <div class="pos" style="animation-delay: 0.15s">
+              <div class="pos-multi">×2</div>
+              <div class="pos-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M23 4 L29.5 6.5 L27.5 9.5 L22 7.5 Z"/>
+                  <path d="M13 13 L23 6 L25 8 L15 15 Z"/>
+                  <rect x="3" y="13" width="11" height="7.5" rx="1"/>
+                  <rect x="2" y="21.5" width="18" height="4" rx="2"/>
+                  <circle cx="5.5" cy="23.5" r="0.8" fill="#1e1e1e"/>
+                  <circle cx="10" cy="23.5" r="0.8" fill="#1e1e1e"/>
+                  <circle cx="14.5" cy="23.5" r="0.8" fill="#1e1e1e"/>
+                </svg>
+              </div>
+              <div class="pos-name">ショベル</div>
+              <div class="pos-amount">$10,000 × 2</div>
+              <div class="pos-rate">月利 7.5%</div>
+            </div>
+            <div class="pos" style="animation-delay: 0.25s">
+              <div class="pos-multi">×1</div>
+              <div class="pos-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="10" y="3.5" width="12" height="2.5" rx="1.25"/>
+                  <rect x="9.5" y="6" width="13" height="10" rx="1.5"/>
+                  <rect x="14.8" y="16" width="2.4" height="6.5"/>
+                  <path d="M13 22.5 L19 22.5 L16 29 Z"/>
+                </svg>
+              </div>
+              <div class="pos-name">ドリル</div>
+              <div class="pos-amount">$3,000</div>
+              <div class="pos-rate">月利 6.0%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="breakdown-table">
+        <div class="bt-row">
+          <div class="bt-icon">i</div>
+          <div>
+            <div class="bt-label">本人のマイニング収益</div>
+            <div class="bt-label-sub">シャベル $300 × 月利 3.0%</div>
+          </div>
+          <div class="bt-value">$9<span class="bt-value-jpy">約 1,431 円</span></div>
+        </div>
+        <div class="bt-row">
+          <div class="bt-icon">ii</div>
+          <div>
+            <div class="bt-label">Lv.1 マイニング + 直紹介 20%</div>
+            <div class="bt-label-sub">ショベル×2 + ドリル×1 ＝ マイニング $1,680 + ボーナス $336</div>
+          </div>
+          <div class="bt-value">$2,016<span class="bt-value-jpy">約 320,544 円</span></div>
+        </div>
+        <div class="bt-row total">
+          <div class="bt-icon">＝</div>
+          <div>
+            <div class="bt-label">月間合計</div>
+            <div class="bt-label-sub">年間：$24,300 ／ 約 3,863,700 円</div>
+          </div>
+          <div class="bt-value">$2,025<span class="bt-value-jpy">約 321,975 円</span></div>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="sum-card">
+          <div class="sum-card-label">Initial Investment</div>
+          <div class="sum-card-value">約 370万円</div>
+          <div class="sum-card-sub">$23,300</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-card-label">Recovery Period</div>
+          <div class="sum-card-value">約 12ヶ月</div>
+          <div class="sum-card-sub">単純回収・複利なし</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-card-label">Annual Yield</div>
+          <div class="sum-card-value">約 104%</div>
+          <div class="sum-card-sub">年利回り（月利前提）</div>
+        </div>
+      </div>
+
+      <div class="lifestyle">
+        <div class="lifestyle-label">◆ LIFESTYLE</div>
+        <div class="lifestyle-title">月 30 万円あったら、できること</div>
+        <div class="lifestyle-list">
+          <div class="lifestyle-item">家賃・生活費の大半をカバー</div>
+          <div class="lifestyle-item">年1〜2回の海外旅行</div>
+          <div class="lifestyle-item">パートナーとの外食を気兼ねなく</div>
+          <div class="lifestyle-item">子どもの教育費・習い事の自由</div>
+          <div class="lifestyle-item">資格取得・スキルアップ投資</div>
+          <div class="lifestyle-item">会社員の副収入として十分な額</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ====== MODEL C ====== -->
+    <article class="model">
+      <div class="model-header">
+        <div class="model-badge">C</div>
+        <div class="model-title-block">
+          <h3>月収 50万円プラン</h3>
+          <div class="jp-goal">— Abundance · a new chapter</div>
+        </div>
+        <div class="model-hero-number">
+          <span class="num">¥499,419</span>
+          <div class="unit">/ MONTH</div>
+        </div>
+      </div>
+
+      <div class="pyramid-visual">
+        <div class="pyramid-label">◆ あなたのネットワーク構成</div>
+
+        <div class="tier">
+          <div class="tier-tag"><span class="tag">YOU <span class="ja">本人</span></span></div>
+          <div class="tier-row">
+            <div class="pos me" style="animation-delay: 0.05s">
+              <div class="pos-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="11" y="4" width="10" height="2.5" rx="1.25"/>
+                  <rect x="14.8" y="6.5" width="2.4" height="14"/>
+                  <path d="M10 20.5 L22 20.5 L19 28 Q16 29.2 13 28 Z"/>
+                </svg>
+              </div>
+              <div class="pos-name">シャベル</div>
+              <div class="pos-amount">$300</div>
+              <div class="pos-rate">月利 3.0%</div>
+            </div>
+          </div>
+        </div>
+
+        <svg class="connector-svg" viewBox="0 0 2 40" preserveAspectRatio="none">
+          <line x1="1" y1="0" x2="1" y2="40"/>
+        </svg>
+
+        <div class="tier">
+          <div class="tier-tag"><span class="tag">LV.1 <span class="ja">直紹介（自分）</span></span></div>
+          <div class="tier-row">
+            <div class="pos" style="animation-delay: 0.15s">
+              <div class="pos-multi">×3</div>
+              <div class="pos-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M23 4 L29.5 6.5 L27.5 9.5 L22 7.5 Z"/>
+                  <path d="M13 13 L23 6 L25 8 L15 15 Z"/>
+                  <rect x="3" y="13" width="11" height="7.5" rx="1"/>
+                  <rect x="2" y="21.5" width="18" height="4" rx="2"/>
+                  <circle cx="5.5" cy="23.5" r="0.8" fill="#1e1e1e"/>
+                  <circle cx="10" cy="23.5" r="0.8" fill="#1e1e1e"/>
+                  <circle cx="14.5" cy="23.5" r="0.8" fill="#1e1e1e"/>
+                </svg>
+              </div>
+              <div class="pos-name">ショベル</div>
+              <div class="pos-amount">$10,000 × 3</div>
+              <div class="pos-rate">月利 7.5%</div>
+            </div>
+            <div class="pos" style="animation-delay: 0.25s">
+              <div class="pos-multi">×2</div>
+              <div class="pos-icon">
+                <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="10" y="3.5" width="12" height="2.5" rx="1.25"/>
+                  <rect x="9.5" y="6" width="13" height="10" rx="1.5"/>
+                  <rect x="14.8" y="16" width="2.4" height="6.5"/>
+                  <path d="M13 22.5 L19 22.5 L16 29 Z"/>
+                </svg>
+              </div>
+              <div class="pos-name">ドリル</div>
+              <div class="pos-amount">$3,000 × 2</div>
+              <div class="pos-rate">月利 6.0%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="breakdown-table">
+        <div class="bt-row">
+          <div class="bt-icon">i</div>
+          <div>
+            <div class="bt-label">本人のマイニング収益</div>
+            <div class="bt-label-sub">シャベル $300 × 月利 3.0%</div>
+          </div>
+          <div class="bt-value">$9<span class="bt-value-jpy">約 1,431 円</span></div>
+        </div>
+        <div class="bt-row">
+          <div class="bt-icon">ii</div>
+          <div>
+            <div class="bt-label">Lv.1 マイニング + 直紹介 20%</div>
+            <div class="bt-label-sub">ショベル×3 + ドリル×2 ＝ マイニング $2,610 + ボーナス $522</div>
+          </div>
+          <div class="bt-value">$3,132<span class="bt-value-jpy">約 497,988 円</span></div>
+        </div>
+        <div class="bt-row total">
+          <div class="bt-icon">＝</div>
+          <div>
+            <div class="bt-label">月間合計</div>
+            <div class="bt-label-sub">年間：$37,692 ／ 約 5,993,028 円</div>
+          </div>
+          <div class="bt-value">$3,141<span class="bt-value-jpy">約 499,419 円</span></div>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="sum-card">
+          <div class="sum-card-label">Initial Investment</div>
+          <div class="sum-card-value">約 577万円</div>
+          <div class="sum-card-sub">$36,300</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-card-label">Recovery Period</div>
+          <div class="sum-card-value">約 12ヶ月</div>
+          <div class="sum-card-sub">単純回収・複利なし</div>
+        </div>
+        <div class="sum-card">
+          <div class="sum-card-label">Annual Yield</div>
+          <div class="sum-card-value">約 104%</div>
+          <div class="sum-card-sub">年利回り（月利前提）</div>
+        </div>
+      </div>
+
+      <div class="lifestyle">
+        <div class="lifestyle-label">◆ LIFESTYLE</div>
+        <div class="lifestyle-title">月 50 万円あったら、できること</div>
+        <div class="lifestyle-list">
+          <div class="lifestyle-item">働き方を自由に選べる経済基盤</div>
+          <div class="lifestyle-item">家族での海外旅行が定番に</div>
+          <div class="lifestyle-item">憧れのブランドが普段使いに</div>
+          <div class="lifestyle-item">住まいのアップグレード</div>
+          <div class="lifestyle-item">親への仕送り・贈り物の自由</div>
+          <div class="lifestyle-item">次の資産形成への再投資余力</div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ============ COMPARISON ============ -->
+  <section class="comparison">
+    <div class="section-header">
+      <h2>3 モデル <span class="accent">比較</span></h2>
+      <p>あなたのライフプランに合うのは、どれ？</p>
+    </div>
+
+    <div class="comp-table">
+      <div class="comp-header">
+        <div>項 目</div>
+        <div>A · 月10万</div>
+        <div>B · 月30万</div>
+        <div>C · 月50万</div>
+      </div>
+      <div class="comp-row">
+        <div>Lv.1 構成</div>
+        <div>ドリル × 3</div>
+        <div>ショベル×2<br>＋ ドリル×1</div>
+        <div>ショベル×3<br>＋ ドリル×2</div>
+      </div>
+      <div class="comp-row">
+        <div>総ポジション数</div>
+        <div><span class="num">4</span> 個</div>
+        <div><span class="num">4</span> 個</div>
+        <div><span class="num">6</span> 個</div>
+      </div>
+      <div class="comp-row highlight">
+        <div>月間収益</div>
+        <div><span class="num">約10.4万円</span></div>
+        <div><span class="num">約32.2万円</span></div>
+        <div><span class="num">約49.9万円</span></div>
+      </div>
+      <div class="comp-row">
+        <div>必要投資額</div>
+        <div><span class="num">約148万円</span></div>
+        <div><span class="num">約370万円</span></div>
+        <div><span class="num">約577万円</span></div>
+      </div>
+      <div class="comp-row">
+        <div>回収期間</div>
+        <div>約14ヶ月</div>
+        <div>約12ヶ月</div>
+        <div>約12ヶ月</div>
+      </div>
+      <div class="comp-row">
+        <div>年利回り（単純）</div>
+        <div>約85%</div>
+        <div>約104%</div>
+        <div>約104%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NOTES ============ -->
+  <section class="notes">
+    <div class="notes-card">
+      <div class="notes-label">◆ IMPORTANT NOTICE</div>
+      <h3 class="notes-title">大切なお知らせ</h3>
+      <ul class="notes-list">
+        <li>上記の月利（3.0〜7.5%）は設計上の想定値で、<strong>元本・利回りは保証されません</strong>。実際の収益は相場や運営状況で変動します。</li>
+        <li>円換算は 1ドル = 159円（2026年4月時点）で計算しています。為替変動により円での受取額は増減します。</li>
+        <li>「回収期間」は、受け取った収益を再投資せず全額回収に充てた場合の単純計算です。複利運用では短縮されますが、相場変動リスクが伴います。</li>
+        <li>「自己アフィリエイト」とは、自分のアカウントで複数ポジションを保有することを指します。規約上の扱いは必ず公式資料でご確認ください。</li>
+        <li>投資は<strong>余剰資金</strong>で、生活に影響のない範囲で。判断は必ずご自身で行い、必要に応じて専門家にご相談ください。</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <div class="divider"></div>
+    Ronkaito Foundation &nbsp;·&nbsp; Real Asset Mining &nbsp;·&nbsp; Lifestyle Design Model<br>
+    <span style="font-size:11px; color: var(--ink-dim); letter-spacing: 0.1em;">RKT-SIM-2026-012 · Lv.1 Only Edition</span>
+  </footer>
+
+</div>
+</body>
+</html>
